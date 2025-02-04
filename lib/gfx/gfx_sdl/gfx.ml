@@ -345,7 +345,8 @@ let poll_event =
       | `Window_event
         when Sdl.Event.(get ev window_event_id = window_event_close) ->
         running := false
-      | `Quit -> running := false
+      (* | `Quit -> running := false *)
+      | `Quit -> Queue.add Gfx_base.Quit queue
       | `Mouse_motion ->
         let x = Sdl.Event.(get ev mouse_motion_x) in
         let y = Sdl.Event.(get ev mouse_motion_y) in

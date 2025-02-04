@@ -174,6 +174,7 @@ type event =
   | KeyDown of string (** Key with a given name was pressed *)
   | MouseMove of int * int (* button pressed bitmask and x/y coordinates, relative to the window. *)
   | MouseButton of int * bool * int * int (* button button number, pressed/released, x/y relative to the window. *)
+  | Quit  (** The user requested to close the window *)
 
 (** The type of input events. 
     The string describing keyboard events is implementation defined.
