@@ -79,6 +79,7 @@ class player name =
     inherit tagged ()
     inherit texture ()
     inherit resolver ()
+    inherit velocity ()
   end
 
 class ball () =
@@ -89,6 +90,7 @@ class ball () =
     inherit tagged ()
     inherit texture ()
     inherit resolver ()
+    inherit velocity ()
   end
 
 class wall () =
