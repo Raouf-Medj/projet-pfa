@@ -80,6 +80,7 @@ class ball () =
 
 class wall () =
   object
+    inherit resolver()
     inherit Entity.t ()
     inherit position ()
     inherit box ()
