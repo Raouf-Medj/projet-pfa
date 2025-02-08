@@ -1,14 +1,13 @@
 module type T =
 sig
-  type t
-  val id : t -> (module Entity.ID)
+  type t = private #Entity.t
   val init : float -> unit
   val update : float -> t Seq.t -> unit
 end
 
 module type S = sig
   type t
-  (**  the type of the entitiesvalues accepted by the system *)
+  (**  the type of the entities accepted by the system *)
 
   val init : float -> unit
   (* initializes the system. The float argument is the current time in nanoseconds. *)
@@ -21,6 +20,10 @@ module type S = sig
 
   val unregister : t -> unit
   (* remove an entity from this system *)
+
+  val reset : unit -> unit
+  (* remove all entities *)
+
 end
 
 
@@ -32,18 +35,17 @@ struct
   type t = X.t
   let table = Entity.Table.create 16
   let register e =
-    let eid = X.id e in
-    if Entity.Table.mem table eid then
-      failwith (Format.asprintf "Entity %a is already registered" Entity.pp eid)
+    if Entity.Table.mem table e then
+      failwith (Format.asprintf "Entity %a is already registered" Entity.pp e)
     else
-      Entity.Table.add table eid e;
-    Entity.register eid (fun () -> Entity.Table.remove table eid)
+      Entity.Table.add table e ();
+    Entity.register (e:>Entity.t) (fun () -> Entity.Table.remove table e)
 
-  let unregister e =
-    let eid = X.id e in
-    Entity.Table.remove table eid
+  let unregister e = Entity.Table.remove table e
   let init dt = X.init dt
-  let update dt = X.update dt (Entity.Table.to_seq_values  table)
+  let update dt = X.update dt (Entity.Table.to_seq_keys  table)
+
+  let reset () = Entity.Table.clear table
 end
 module Make (X:T) : S with type t = X.t =
 struct
@@ -54,6 +56,7 @@ struct
   let update = M.update
   let register = M.register
   let unregister = M.unregister
+  let reset = M.reset
 end
 
 let init_all dt =
