@@ -32,6 +32,12 @@ class resolver () =
     method resolve = r
   end
 
+class velocity () =
+  let r = Component.init Vector.zero in
+  object
+    method velocity = r
+  end
+
 (** Interfaces : ici on liste simplement les types des classes dont on hérite
     si deux classes définissent les mêmes méthodes, celles de la classe écrite
     après sont utilisées (héritage multiple).
@@ -52,6 +58,13 @@ class type drawable =
     inherit position
     inherit box
     inherit texture
+  end
+
+class type movable =
+  object
+    inherit Entity.t
+    inherit position
+    inherit velocity
   end
 
 (** Entités :
