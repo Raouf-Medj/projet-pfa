@@ -20,7 +20,6 @@ type 'a resource = {
   get : unit -> 'a;
   is_ready : unit -> bool;
 }
-
 let resource_ready r = r.is_ready ()
 let get_resource r = r.get ()
 let get_resource_opt r =
@@ -85,27 +84,40 @@ let set_window_size canvas w h =
   canvas##.style##.width := Js.string (string_of_int w ^ "px");
   canvas##.style##.height := Js.string (string_of_int h ^ "px")
 
-let get_context_logical_size ctx = (ctx##.canvas##.width, ctx##.canvas##.height)
+let get_context_logical_size ctx =
+  let h : float Js.Optdef.t = Js.Unsafe.get ctx (Js.string "__lheight__") in
+  let h = Js.Optdef.get h (fun () -> float ctx##.canvas##.height) in
+  let w : float Js.Optdef.t = Js.Unsafe.get ctx (Js.string "__lwidth__") in
+  let w = Js.Optdef.get w (fun () -> float ctx##.canvas##.width) in
+  (int_of_float w, int_of_float h)
 
 let set_context_logical_size ctx w h =
-  ctx##.canvas##.width := w;
-  ctx##.canvas##.height := h
+  let sw = float ctx##.canvas##.width /. float w in
+  let sh = float ctx##.canvas##.height /. float h in
+  Js.Unsafe.set ctx (Js.string "__lwidth__") (float w);
+  Js.Unsafe.set ctx (Js.string "__lheight__") (float h);
+  ctx## scale sw sh
 
 let get_transform ctx : float * bool * bool =
-  let a : float = Js.Unsafe.get ctx (Js.string "__angle__") in
-  let h : float = Js.Unsafe.get ctx (Js.string "__hflip__") in
-  let v : float = Js.Unsafe.get ctx (Js.string "__vflip__") in
+  let a : float Js.Optdef.t = Js.Unsafe.get ctx (Js.string "__angle__") in
+  let a = Js.Optdef.get a (fun () -> 0.0) in
+  let h : float Js.Optdef.t = Js.Unsafe.get ctx (Js.string "__hflip__") in
+  let h = Js.Optdef.get h (fun () -> 1.0) in
+  let v : float Js.Optdef.t = Js.Unsafe.get ctx (Js.string "__vflip__") in
+  let v = Js.Optdef.get v (fun () -> 1.0) in
   (a /. 0.017453292519943295, h < 0.0, v < 0.0)
 
-let set_transform ctx a h v =
-  Js.Unsafe.set ctx (Js.string "__angle__") (a *. 0.017453292519943295);
-  Js.Unsafe.set ctx (Js.string "__hflip__") (if h then -1.0 else 1.0);
-  Js.Unsafe.set ctx (Js.string "__vflip__") (if v then -1.0 else 1.0)
 
 let reset_transform ctx =
   Js.Unsafe.delete ctx (Js.string "__angle__");
   Js.Unsafe.delete ctx (Js.string "__hflip__");
   Js.Unsafe.delete ctx (Js.string "__vflip__")
+let set_transform ctx a h v =
+  if (a = 0.0 || a = -0.0) && not h && not v then reset_transform ctx else begin
+    Js.Unsafe.set ctx (Js.string "__angle__") (a *. 0.017453292519943295);
+    Js.Unsafe.set ctx (Js.string "__hflip__") (if h then -1.0 else 1.0);
+    Js.Unsafe.set ctx (Js.string "__vflip__") (if v then -1.0 else 1.0)
+  end
 
 let get_surface w = w
 
@@ -124,8 +136,9 @@ let blit_full _ctx (dst : surface) (src : surface) sx sy sw sh dx dy dw dh =
   let fdy = float dy in
   let fdw = float dw in
   let fdh = float dh in
-  let a = Js.Unsafe.get ctx (Js.string "__angle__") in
-  let tst = Js.Optdef.test a in
+  let a = Js.Unsafe.get _ctx (Js.string "__angle__") in
+  let a_ : float Js.Optdef.t = a in
+  let tst = Js.Optdef.test a_ in
   if tst then begin
     let tx = fdx +. (0.5 *. fdw) in
     let ty = fdy +. (0.5 *. fdh) in
@@ -135,8 +148,8 @@ let blit_full _ctx (dst : surface) (src : surface) sx sy sw sh dx dy dw dh =
       ctx##rotate a;
       ctx##translate (-.tx) (-.ty)
     end;
-    let cx : float = Js.Unsafe.get ctx (Js.string "__hflip__") in
-    let cy : float = Js.Unsafe.get ctx (Js.string "__vflip__") in
+    let cx : float = Js.Unsafe.get _ctx (Js.string "__hflip__") in
+    let cy : float = Js.Unsafe.get _ctx (Js.string "__vflip__") in
     if cx < 0.0 || cy < 0.0 then begin
       let tx = if cx < 0.0 then tx else 0.0 in
       let ty = if cy < 0.0 then ty else 0.0 in
@@ -158,7 +171,7 @@ let blit_scale _ctx (dst : surface) (src : surface) dx dy dw dh =
 
 let digit n =
   let n = n land 0xf in
-  Char.chr (n + if n < 10 then 48 else 55)
+  Char.unsafe_chr (n + if n < 10 then 48 else 55)
 
 let buff = Bytes.create 9
 (* we are in a single threaded context because of JavaScript *)
@@ -181,10 +194,13 @@ let get_fillStyle ctx : Js.js_string Js.t =
   (* fillStyle is set writeOnly in jsoo binding *)
   Js.Unsafe.get ctx (Js.string "fillStyle")
 
+
 let fill_rect _ctx dst x y w h =
   let ctx = dst##getContext Dom_html._2d_ in
-  ctx##.fillStyle := get_fillStyle _ctx;
+  if ctx != _ctx then ctx##.fillStyle := get_fillStyle _ctx;
   ctx##fillRect (float x) (float y) (float w) (float h)
+
+
 
 let load_image ctx src =
   let canvas = create_surface ctx 0 0 in
@@ -235,16 +251,29 @@ let render_text _ctx text font =
 let poll_event () =
   if Queue.is_empty events then Gfx_base.NoEvent else Queue.pop events
 
+let performance, now =
+  let perf = Js.Unsafe.get Dom_html.window "performance" in
+  let now = Js.Unsafe.get perf "now" in
+  perf, now
 
-let main_loop f k =
-  let cb = ref (Js.wrap_callback (fun _ -> assert false)) in
-  let loop dt =
+let performance_now () : float = Js.Unsafe.call now performance [||]
+let main_loop ?(limit=true) f k =
+  let last_dt = ref 0.0 in
+  let rec loop_limit dt =
+    let d = dt -. !last_dt in
+    if d >= 16. then
+      let () = last_dt := dt in
+      match f dt with
+        None -> ignore (Js.Unsafe.global##requestAnimationFrame loop_limit)
+      | Some res -> (k res)
+    else loop_limit (performance_now ())
+  in
+  let rec loop dt =
     match f dt with
-      None -> ignore (Dom_html.window##requestAnimationFrame !cb)
+      None -> ignore (Js.Unsafe.global##requestAnimationFrame loop)
     | Some res -> (k res)
   in
-  cb := Js.wrap_callback loop;
-  ignore (Dom_html.window##requestAnimationFrame !cb)
+  Js.Unsafe.global##requestAnimationFrame (if limit then loop_limit else loop)
 
 let commit _ = ()
 
