@@ -9,6 +9,7 @@ let ball ctx font =
   e#position#set Vector.{x = float Cst.ball_left_x; y = y_orig};
   e#box#set Rect.{width = Cst.ball_size; height = Cst.ball_size};
   e#velocity#set Vector.zero;
+  
   Draw_system.(register (e :>t));
   Collision_system.(register (e :> t));
   Move_system.(register (e :> t));
