@@ -11,6 +11,16 @@ let player (name, x, y, txt, width, height) =
   e#position#set Vector.{x = float x; y = float y};
   e#box#set Rect.{width; height};
   e#velocity#set Vector.zero;
+  e#tag#set Player;
+  e#resolve#set (fun _ t ->
+    match t#tag#get with
+    | Wall.HWall w ->
+      let s_pos, s_rect = Rect.mdiff e#position#get e#box#get w#position#get w#box#get in
+      let n = Rect.penetration_vector s_pos s_rect in
+      e#position#set (Vector.sub e#position#get n);
+      e#velocity#set Vector.zero
+    | _ -> ()
+  );
   Draw_system.(register (e :> t));
   Collision_system.(register (e :> t));
   Move_system.(register (e :> t));
