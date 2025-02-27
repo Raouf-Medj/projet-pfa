@@ -1,1 +1,1 @@
-let () = Game.run ()
+Game.run ()

@@ -1,6 +1,8 @@
-let init v =
-  object
-    val mutable r = v
-    method get = r
-    method set w = r <- w
+type 'a t = < get : 'a ; set : 'a -> unit >
+
+let def default =
+  object (self)
+    val mutable c = default
+    method get = c
+    method set v = c <- v
   end

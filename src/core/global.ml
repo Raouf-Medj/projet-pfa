@@ -1,19 +1,14 @@
-open Component_defs
+let window_r = ref None
 
-type t = {
-  window : Gfx.window;
-  ctx : Gfx.context;
-  player1 : player;
-  player2 : player;
-  ball : ball;
-  mutable waiting : int;
-}
+let window () = match !window_r with Some w -> w | None -> failwith "Uninitialized window"
 
-let state = ref None
+let init str =
+  let w = Gfx.create str in
+  window_r := Some w
 
-let get () : t =
-  match !state with
-    None -> failwith "Uninitialized global state"
-  | Some s -> s
 
-let set s = state := Some s
+
+let scoring_r = ref 0
+
+let set_scoring n = scoring_r := n
+let scoring () = !scoring_r

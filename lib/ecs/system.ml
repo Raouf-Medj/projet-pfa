@@ -1,13 +1,6 @@
-module type T =
-sig
-  type t = private #Entity.t
-  val init : float -> unit
-  val update : float -> t Seq.t -> unit
-end
-
 module type S = sig
   type t
-  (**  the type of the entities accepted by the system *)
+  (**  the type of values accepted by the system *)
 
   val init : float -> unit
   (* initializes the system. The float argument is the current time in nanoseconds. *)
@@ -20,44 +13,25 @@ module type S = sig
 
   val unregister : t -> unit
   (* remove an entity from this system *)
-
-  val reset : unit -> unit
-  (* remove all entities *)
-
 end
 
+module Make (T : sig
+    type t
+
+    val init : float -> unit
+    val update : float -> t Seq.t -> unit
+  end) : S with type t = T.t = struct
+  type t = T.t
+
+  let elem_table : (t, unit) Hashtbl.t = Hashtbl.create 16
+  let register e = Hashtbl.replace elem_table e ()
+  let unregister e = Hashtbl.remove elem_table e
+  let init dt = T.init dt
+  let update dt = T.update dt (Hashtbl.to_seq_keys elem_table)
+end
 
 let systems = Queue.create ()
 let register m = Queue.add m systems
-
-module PreMake (X : T) : S with type t = X.t =
-struct
-  type t = X.t
-  let table = Entity.Table.create 16
-  let register e =
-    if Entity.Table.mem table e then
-      failwith (Format.asprintf "Entity %a is already registered" Entity.pp e)
-    else
-      Entity.Table.add table e ();
-    Entity.register (e:>Entity.t) (fun () -> Entity.Table.remove table e)
-
-  let unregister e = Entity.Table.remove table e
-  let init dt = X.init dt
-  let update dt = X.update dt (Entity.Table.to_seq_keys  table)
-
-  let reset () = Entity.Table.clear table
-end
-module Make (X:T) : S with type t = X.t =
-struct
-  module M = PreMake(X)
-  let () = register (module M : S)
-  type t = M.t
-  let init = M.init
-  let update = M.update
-  let register = M.register
-  let unregister = M.unregister
-  let reset = M.reset
-end
 
 let init_all dt =
   Queue.iter

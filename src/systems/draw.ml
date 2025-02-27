@@ -1,5 +1,5 @@
-open Ecs
 open Component_defs
+
 
 
 type t = drawable
@@ -7,17 +7,22 @@ type t = drawable
 let init _ = ()
 
 let white = Gfx.color 255 255 255 255
-
 let update _dt el =
-  let Global.{window;ctx;_} = Global.get () in
-  let surface = Gfx.get_surface window in
-  let ww, wh = Gfx.get_context_logical_size ctx in
-  Gfx.set_color ctx white;
-  Gfx.fill_rect ctx surface 0 0 ww wh;
-  Seq.iter (fun (e:t) ->
-      let pos = e#position#get in
-      let box = e#box#get in
-      let txt = e#texture#get in
-      Texture.draw ctx surface pos box txt
+  let win = Game_state.get_window () in
+  let ctx = Gfx.get_context win in
+  let win_surf = Gfx.get_surface win in
+  let w, h = Gfx.get_context_logical_size ctx in
+  let () = Gfx.set_color ctx white in
+  let () = Gfx.fill_rect ctx win_surf 0 0 w h in
+
+  Seq.iter (fun (e : t) ->
+      let Vector.{ x; y } = e # pos # get in
+      let x = int_of_float x in
+      let y = int_of_float y in
+      let Rect.{width; height} = e # rect # get in
+      match e # texture # get with
+        Texture.Color color ->
+        Gfx.set_color ctx color;
+        Gfx.fill_rect ctx win_surf x y width height
     ) el;
   Gfx.commit ctx

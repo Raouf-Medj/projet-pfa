@@ -1,6 +1,8 @@
-val init : 'a -> < get : 'a; set : 'a -> unit >
-(** Initializes an object reference. If [o] is [init v]
-    then:
-    - [o#get] returns the content of the reference
-    - [o#set v] updates the content of the reference with [v].
-*)
+
+type 'a t = < get : 'a ; set : 'a -> unit >
+(** A reference to a value of type 'a in OO style *)
+
+
+
+val def : 'a -> 'a t
+(** utility function to build object references *)

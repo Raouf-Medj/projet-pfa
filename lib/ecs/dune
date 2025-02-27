@@ -1,2 +1,3 @@
 (library
- (name ecs))
+ (name ecs)
+)

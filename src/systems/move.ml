@@ -1,13 +1,16 @@
-open Ecs
+(* Question 3 *)
 open Component_defs
 
 type t = movable
 
-let init (_ : float) = ()
+let init _ = ()
+let dt = 1000. /. 60.
 
-let update _ el =
-  Seq.iter (fun e ->
-    let pos = e#position#get in
-    let vel = e#velocity#get in
-    e#position#set (Vector.add pos vel)  
-  ) el
+let update _dt el =
+  Seq.iter
+    (fun (e : t) ->
+      let v = e#velocity#get in
+      let p = e#pos#get in
+      let np = Vector.add p (Vector.mult dt v) in
+      e#pos#set np)
+    el
