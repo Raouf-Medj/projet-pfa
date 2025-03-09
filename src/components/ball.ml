@@ -66,7 +66,5 @@ let move_ball ball v =
         ball#velocity#set (Vector.add ball#velocity#get Vector.{ x = v.x *. 15.; y = 0. }) 
       )
       else
-        ball#velocity#set (Vector.add ball#velocity#get Vector.{ x = v.x; y = 0. }) 
-
-        (* use bellow in above *)
+        ball#velocity#set (Vector.add ball#velocity#get Vector.{ x = v.x; y = 0. })
     )
