@@ -67,6 +67,13 @@ class type movable =
     inherit velocity
   end
 
+class type gravitational =
+  object
+    inherit Entity.t
+    inherit position
+    inherit velocity
+  end
+
 (** Entités :
     Ici, dans inherit, on appelle les constructeurs pour qu'ils initialisent
     leur partie de l'objet, d'où la présence de l'argument ()

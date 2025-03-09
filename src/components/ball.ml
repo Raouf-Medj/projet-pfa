@@ -2,7 +2,7 @@ open Ecs
 open Component_defs
 open System_defs
 
-type tag += Ball
+type tag += Ball of ball
 
 let ball ctx font =
   let e = new ball () in
@@ -11,11 +11,15 @@ let ball ctx font =
   e#position#set Vector.{x = float Cst.ball_left_x; y = y_orig};
   e#box#set Rect.{width = Cst.ball_size; height = Cst.ball_size};
   e#velocity#set Vector.zero;
-  e#tag#set Ball;
+  e#tag#set (Ball e);
   e#resolve#set (fun n t ->
     match t#tag#get with
-    | Wall.HWall _ | Player.Player ->
-      e#velocity#set Vector.{ x = e#velocity#get.x *. n.x; y = e#velocity#get.y *. n.y }
+    | Wall.HWall w ->
+      (* e#velocity#set Vector.{ x = e#velocity#get.x *. n.x; y = e#velocity#get.y *. n.y } *)
+      let s_pos, s_rect = Rect.mdiff e#position#get e#box#get w#position#get w#box#get in
+      let n = Rect.penetration_vector s_pos s_rect in
+      e#position#set (Vector.sub e#position#get n);
+      e#velocity#set Vector.zero
     | Wall.VWall (i, _) ->
       e#velocity#set Vector.zero;
       if i = 1 then e#position#set Vector.{x = float Cst.ball_left_x; y = float Cst.ball_v_offset}
@@ -28,6 +32,7 @@ let ball ctx font =
   Draw_system.(register (e :>t));
   Collision_system.(register (e :> t));
   Move_system.(register (e :> t));
+  Gravitate_system.(register (e :> t));
   e
 
 let random_v b =
@@ -44,3 +49,13 @@ let restart () =
     let Global.{ ball; _ } = global in
     ball#velocity#set v;
   end
+
+let get_ball () = 
+  let Global.{ball; _ } = Global.get () in
+  ball
+
+let stop_ball () = 
+  let Global.{ball; _ } = Global.get () in
+  ball#velocity#set Vector.zero
+
+let move_ball ball v = ball#velocity#set (Vector.add ball#velocity#get v)

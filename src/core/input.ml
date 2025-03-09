@@ -18,12 +18,12 @@ let handle_input () =
       if has_key key then action ()) action_table
 
 let () =
-  register "e" (fun () -> Player.(move_player (player1()) Cst.paddle_v_up));
-  register "d" (fun () -> Player.(move_player (player1()) Cst.paddle_v_down));
-  register "u" (fun () -> Player.(move_player (player2()) Cst.paddle_v_up));
-  register "j" (fun () -> Player.(move_player (player2()) Cst.paddle_v_down));
+  register "z" (fun () -> Ball.(move_ball (get_ball()) Cst.up));
+  register "s" (fun () -> Ball.(move_ball (get_ball()) Cst.down));
+  register "d" (fun () -> Ball.(move_ball (get_ball()) Cst.right));
+  register "q" (fun () -> Ball.(move_ball (get_ball()) Cst.left));
   register "g" Ball.restart;
-  register "s" (fun () ->
+  (* register "s" (fun () ->
       let global = Global.get () in
       global.waiting <- 1;
-    )
+    ) *)

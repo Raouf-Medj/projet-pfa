@@ -3,11 +3,12 @@ open Component_defs
 open Ecs
 
 let update dt =
-  let () = Player.stop_players () in
+  let () = Player.stop_player () in
   let () = Input.handle_input () in
   Collision_system.update dt;
-  Draw_system.update dt;
+  Gravitate_system.update dt;
   Move_system.update dt;
+  Draw_system.update dt;
   None
 
 let run () =
@@ -19,8 +20,8 @@ let run () =
   let ctx = Gfx.get_context window in
   let font = Gfx.load_font Cst.font_name "" 128 in
   let _walls = Wall.walls () in
-  let player1, player2 = Player.players () in
+  let player = Player.init_player () in
   let ball = Ball.ball ctx font in
-  let global = Global.{ window; ctx; player1; player2; ball; waiting = 1; } in
+  let global = Global.{ window; ctx; player; ball; waiting = 1; } in
   Global.set global;
   Gfx.main_loop update (fun () -> ())

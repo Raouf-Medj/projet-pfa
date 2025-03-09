@@ -3,8 +3,7 @@ open Component_defs
 type t = {
   window : Gfx.window;
   ctx : Gfx.context;
-  player1 : player;
-  player2 : player;
+  player : player;
   ball : ball;
   mutable waiting : int;
 }

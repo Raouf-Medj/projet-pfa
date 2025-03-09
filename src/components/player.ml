@@ -14,35 +14,35 @@ let player (name, x, y, txt, width, height) =
   e#tag#set Player;
   e#resolve#set (fun _ t ->
     match t#tag#get with
-    | Wall.HWall w ->
+    | Wall.HWall w | Wall.VWall (_, w) ->
       let s_pos, s_rect = Rect.mdiff e#position#get e#box#get w#position#get w#box#get in
       let n = Rect.penetration_vector s_pos s_rect in
       e#position#set (Vector.sub e#position#get n);
       e#velocity#set Vector.zero
+    | Ball.Ball b ->
+      let s_pos, s_rect = Rect.mdiff b#position#get b#box#get e#position#get e#box#get in
+      let n = Rect.penetration_vector s_pos s_rect in
+      b#position#set (Vector.sub b#position#get n);
+      b#velocity#set Vector.zero
     | _ -> ()
   );
   Draw_system.(register (e :> t));
   Collision_system.(register (e :> t));
   Move_system.(register (e :> t));
+  Gravitate_system.(register (e :> t));
   e
 
-let players () =  
-  player  Cst.("player1", paddle1_x, paddle1_y, paddle_color, paddle_width, paddle_height),
-  player  Cst.("player2", paddle2_x, paddle2_y, paddle_color, paddle_width, paddle_height)
+let init_player () =  
+  player  Cst.("player", player_x, player_y, player_color, player_width, player_height)
 
 
-let player1 () = 
-  let Global.{player1; _ } = Global.get () in
-  player1
+let get_player () = 
+  let Global.{player; _ } = Global.get () in
+  player
 
-let player2 () =
-  let Global.{player2; _ } = Global.get () in
-  player2
+let stop_player () = 
+  let Global.{player; _ } = Global.get () in
+  player#velocity#set Vector.zero
 
-let stop_players () = 
-  let Global.{player1; player2; _ } = Global.get () in
-  player1#velocity#set Vector.zero;
-  player2#velocity#set Vector.zero
-
-let move_player player v = player#velocity#set v
+let move_player player v = player#velocity#set (Vector.add player#velocity#get v)
   
