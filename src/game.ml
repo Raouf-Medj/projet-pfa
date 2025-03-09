@@ -19,9 +19,6 @@ let run () =
   let window = Gfx.create window_spec in
   let ctx = Gfx.get_context window in
   let font = Gfx.load_font Cst.font_name "" 128 in
-  let _walls = Barrier.walls () in
-  let player = Player.init_player () in
-  let ball = Ball.ball ctx font in
   let resource_list = Gfx.load_file "resources/files/resource_list.txt" in
   Gfx.main_loop (fun _dt -> Gfx.get_resource_opt resource_list) (
     fun txt ->
@@ -36,7 +33,12 @@ let run () =
                          |> List.map (fun img -> Texture.Image img)
                          |> Array.of_list
           in
-          let global = Global.{ window; ctx; player; ball; textures } in
+          let global = Global.{ window; ctx; player = None; hero = None; textures } in
+          Global.set global;
+          let _walls = Barrier.walls () in
+          let player = Some (Player.init_player ()) in
+          let hero = Some (Hero.hero ctx font) in
+          let global = Global.{ window; ctx; player; hero; textures } in
           Global.set global;
           Gfx.main_loop update (fun () -> ())
       )

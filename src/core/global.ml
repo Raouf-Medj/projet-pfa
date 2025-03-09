@@ -3,8 +3,8 @@ open Component_defs
 type t = {
   window : Gfx.window;
   ctx : Gfx.context;
-  player : player;
-  ball : ball;
+  player : player option;
+  hero : hero option;
   textures : Texture.t array;
 }
 

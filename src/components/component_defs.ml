@@ -95,7 +95,7 @@ class player name =
     inherit velocity ()
   end
 
-class ball () =
+class hero () =
   object
     inherit Entity.t ()
     inherit position ()
