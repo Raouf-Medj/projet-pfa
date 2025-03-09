@@ -5,7 +5,7 @@ type t = {
   ctx : Gfx.context;
   player : player;
   ball : ball;
-  mutable waiting : int;
+  textures : Texture.t array;
 }
 
 val get : unit -> t

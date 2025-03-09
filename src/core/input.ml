@@ -21,9 +21,4 @@ let () =
   register "z" (fun () -> Ball.(move_ball (get_ball()) Cst.up));
   register "s" (fun () -> Ball.(move_ball (get_ball()) Cst.down));
   register "d" (fun () -> Ball.(move_ball (get_ball()) Cst.right));
-  register "q" (fun () -> Ball.(move_ball (get_ball()) Cst.left));
-  register "g" Ball.restart;
-  (* register "s" (fun () ->
-      let global = Global.get () in
-      global.waiting <- 1;
-    ) *)
+  register "q" (fun () -> Ball.(move_ball (get_ball()) Cst.left))
