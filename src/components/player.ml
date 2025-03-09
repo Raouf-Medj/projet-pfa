@@ -19,16 +19,17 @@ let player (name, x, y, txt, width, height) =
       let n = Rect.penetration_vector s_pos s_rect in
       e#position#set (Vector.sub e#position#get n);
       e#velocity#set Vector.zero
-    | Ball.Ball b ->
-      let s_pos, s_rect = Rect.mdiff b#position#get b#box#get e#position#get e#box#get in
+    | Hero.Hero h ->
+      let s_pos, s_rect = Rect.mdiff e#position#get e#box#get h#position#get h#box#get in
       let n = Rect.penetration_vector s_pos s_rect in
-      b#position#set (Vector.sub b#position#get n);
-      b#velocity#set Vector.zero
+      e#position#set (Vector.sub e#position#get n);
+      e#velocity#set Vector.zero
     | _ -> ()
   );
   Draw_system.(register (e :> t));
   Collision_system.(register (e :> t));
   Move_system.(register (e :> t));
+  Gravitate_system.(register (e :> t));
   e
 
 let init_player () =  
@@ -37,11 +38,30 @@ let init_player () =
 
 let get_player () = 
   let Global.{player; _ } = Global.get () in
-  player
+  match player with
+  | Some p -> p
+  | None -> failwith "No player"
 
 let stop_player () = 
   let Global.{player; _ } = Global.get () in
-  player#velocity#set Vector.zero
+  match player with
+  | Some p -> p#velocity#set Vector.zero
+  | None -> ()
 
-let move_player player v = player#velocity#set (Vector.add player#velocity#get v)
+let move_player hero v =
+  if Vector.norm hero#velocity#get < 20. then
+    Gfx.debug "y = %f\n" v.Vector.y;
+    if v.Vector.y < 0. && hero#is_grounded#get then (
+      Gfx.debug "jump\n";
+      hero#is_grounded#set false;
+      hero#velocity#set Vector.{ x = 0.; y = -5. }
+    )
+    else (
+      if v.Vector.x <> 0. && hero#is_grounded#get then (
+        Gfx.debug "lr\n";
+        hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x *. 15.; y = 0. }) 
+      )
+      else
+        hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x; y = 0. })
+    )
   

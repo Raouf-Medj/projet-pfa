@@ -54,7 +54,7 @@ let hwall1_x = 0
 let hwall1_y = 0
 let hwall2_x = 0
 let hwall2_y = window_height -  wall_thickness
-let hwall_color = Texture.green
+let hwall_color = Texture.transparent
 
 let vwall_width = wall_thickness
 let vwall_height = window_height - 2 * wall_thickness
@@ -62,7 +62,7 @@ let vwall1_x = 0
 let vwall1_y = wall_thickness
 let vwall2_x = window_width - wall_thickness
 let vwall2_y = vwall1_y
-let vwall_color = Texture.yellow
+let vwall_color = Texture.transparent
 
 let font_name = if Gfx.backend = "js" then "monospace" else "resources/images/monospace.ttf"
 let font_color = Gfx.color 0 0 0 255

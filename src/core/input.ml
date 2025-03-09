@@ -18,7 +18,7 @@ let handle_input () =
       if has_key key then action ()) action_table
 
 let () =
-  register "z" (fun () -> Ball.(move_ball (get_ball()) Cst.up));
-  register "s" (fun () -> Ball.(move_ball (get_ball()) Cst.down));
-  register "d" (fun () -> Ball.(move_ball (get_ball()) Cst.right));
-  register "q" (fun () -> Ball.(move_ball (get_ball()) Cst.left))
+  register "z" (fun () -> Hero.(move_hero (get_hero()) Cst.up));
+  register "s" (fun () -> Hero.(move_hero (get_hero()) Cst.down));
+  register "d" (fun () -> Hero.(move_hero (get_hero()) Cst.right));
+  register "q" (fun () -> Hero.(move_hero (get_hero()) Cst.left))
