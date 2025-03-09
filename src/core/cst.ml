@@ -12,12 +12,12 @@ HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
 
 let window_width = 800
 let window_height = 600
-let up = Vector.{ x = 0.0; y = -5.0 }
-let down = Vector.{ x = 0.0; y = 5.0 }
-let right = Vector.{ x = 5.0; y = 0.0 }
-let left = Vector.{ x = -5.0; y = 0.0 }
-let player_height = 24
-let player_width = 24
+let up = Vector.{ x = 0.0; y = -1.0 }
+let down = Vector.{ x = 0.0; y = 1.0 }
+let right = Vector.{ x = 0.2; y = 0.0 }
+let left = Vector.{ x = -0.2; y = 0.0 }
+let player_height = 32
+let player_width = 32
 let player_color = Texture.blue
 let player_x = window_width / 2 - player_width / 2
 let player_y = window_height / 2 - player_height / 2

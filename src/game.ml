@@ -5,9 +5,9 @@ open Ecs
 let update dt =
   let () = Player.stop_player () in
   let () = Input.handle_input () in
+  Move_system.update dt;
   Collision_system.update dt;
   Gravitate_system.update dt;
-  Move_system.update dt;
   Draw_system.update dt;
   None
 
@@ -19,7 +19,7 @@ let run () =
   let window = Gfx.create  window_spec in
   let ctx = Gfx.get_context window in
   let font = Gfx.load_font Cst.font_name "" 128 in
-  let _walls = Wall.walls () in
+  let _walls = Barrier.walls () in
   let player = Player.init_player () in
   let ball = Ball.ball ctx font in
   let global = Global.{ window; ctx; player; ball; waiting = 1; } in

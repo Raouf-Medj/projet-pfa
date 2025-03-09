@@ -1,21 +1,20 @@
 open Component_defs
 open System_defs
 
-type tag += HWall of wall| VWall of int * wall
+type tag += Barrier of barrier
 
-let wall (x, y, txt, width, height, horiz) =
-  let e = new wall () in
+let barrier (x, y, txt, width, height, horiz) =
+  let e = new barrier () in
   e#texture#set txt;
   e#position#set Vector.{x = float x; y = float y};
-  e#tag#set (if horiz then
-               HWall e else VWall((if x < 100 then 1 else 2), e));
+  e#tag#set (Barrier e);
   e#box#set Rect.{width; height};
   Draw_system.(register (e :> t));
   Collision_system.(register (e :> t));
   e
 
 let walls () = 
-  List.map wall
+  List.map barrier
     Cst.[ 
       (hwall1_x, hwall1_y, hwall_color, hwall_width, hwall_height, true);
       (hwall2_x, hwall2_y, hwall_color, hwall_width, hwall_height, true);
