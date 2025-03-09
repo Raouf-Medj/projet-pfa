@@ -14,7 +14,7 @@ let player (name, x, y, txt, width, height) =
   e#tag#set Player;
   e#resolve#set (fun _ t ->
     match t#tag#get with
-    | Wall.HWall w | Wall.VWall (_, w) ->
+    | Barrier.Barrier w ->
       let s_pos, s_rect = Rect.mdiff e#position#get e#box#get w#position#get w#box#get in
       let n = Rect.penetration_vector s_pos s_rect in
       e#position#set (Vector.sub e#position#get n);
@@ -29,7 +29,6 @@ let player (name, x, y, txt, width, height) =
   Draw_system.(register (e :> t));
   Collision_system.(register (e :> t));
   Move_system.(register (e :> t));
-  Gravitate_system.(register (e :> t));
   e
 
 let init_player () =  

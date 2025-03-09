@@ -38,6 +38,12 @@ class velocity () =
     method velocity = r
   end
 
+class grounded () =
+let r = Component.init true in
+object
+  method is_grounded = r
+end
+
 (** Interfaces : ici on liste simplement les types des classes dont on hérite
     si deux classes définissent les mêmes méthodes, celles de la classe écrite
     après sont utilisées (héritage multiple).
@@ -98,9 +104,10 @@ class ball () =
     inherit texture ()
     inherit resolver ()
     inherit velocity ()
+    inherit grounded ()
   end
 
-class wall () =
+class barrier () =
   object
     inherit resolver()
     inherit Entity.t ()
