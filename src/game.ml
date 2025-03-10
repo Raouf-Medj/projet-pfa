@@ -3,13 +3,72 @@ open Component_defs
 open Ecs
 
 let update dt =
-  let () = Player.stop_player () in
+  let global = Global.get() in
+  if global.load_next_scene || global.restart then (
+    Scene.reset ();
+    if global.restart then (
+      global.restart <- false;
+    )
+    else (
+      global.load_next_scene <- false;
+      global.current_scene <- global.current_scene + 1
+    );
+    Global.set global;
+    Scene.load (global.current_scene);
+    let _ = Projectile.projectile (200, 590, 10, 10, 0) in ()
+  );
   let () = Input.handle_input () in
   Move_system.update dt;
   Collision_system.update dt;
   Gravitate_system.update dt;
   Draw_system.update dt;
   None
+
+let lvl01 = [|
+  "BBBBBBBBBBBBBBBBBBBBBBBBB";
+  "B                       G";
+  "B                       G";
+  "B               BBBBBBBBB";
+  "B                       B";
+  "B        BBB            B";
+  "B                       B";
+  "B  B                    B";
+  "B                       B";
+  "B     BB                B";
+  "B                       B";
+  "B           BBB         B";
+  "B                  RP   B";
+  "B                  BB   B";
+  "B            P          B";
+  "B           BBB         B";
+  "B    P                  B";
+  "BS  BBBBB               B";
+  "B            P          B";
+  "BBBBBBBBBBBBBBBBBBBBBBBBB"
+|]
+
+let lvl02 = [|
+  "BBBBBBBBBBBBBBBBBBBBBBBBB";
+  "B                       B";
+  "B                       B";
+  "B                BBB    B";
+  "B                       B";
+  "B        BBB            B";
+  "B                       B";
+  "B  B                    B";
+  "B                       B";
+  "B     BB                B";
+  "B                       B";
+  "B           BBB         B";
+  "B                       B";
+  "B                  BB   B";
+  "B                       B";
+  "B           BBB         B";
+  "B                       B";
+  "BS  BBBBB               B";
+  "B                       B";
+  "BBBBBBBBBBBBBBBBBBBBBBBBB"
+|]
 
 let run () =
   let window_spec =
@@ -18,7 +77,7 @@ let run () =
   in
   let window = Gfx.create window_spec in
   let ctx = Gfx.get_context window in
-  let font = Gfx.load_font Cst.font_name "" 128 in
+  (* let font = Gfx.load_font Cst.font_name "" 128 in *)
   let resource_list = Gfx.load_file "resources/files/resource_list.txt" in
   Gfx.main_loop (fun _dt -> Gfx.get_resource_opt resource_list) (
     fun txt ->
@@ -33,12 +92,11 @@ let run () =
                          |> List.map (fun img -> Texture.Image img)
                          |> Array.of_list
           in
-          let global = Global.{ window; ctx; player = None; hero = None; textures } in
-          Global.set global;
-          let _walls = Barrier.walls () in
-          let player = Some (Player.init_player ()) in
-          let hero = Some (Hero.hero ctx font) in
-          let global = Global.{ window; ctx; player; hero; textures } in
+          let scenes = [| lvl01; lvl02 |] in
+          let current_scene = -1 in
+          let load_next_scene = true in
+          let restart = false in
+          let global = Global.{ window; ctx; hero = None; textures; scenes; current_scene; load_next_scene; restart } in
           Global.set global;
           Gfx.main_loop update (fun () -> ())
       )

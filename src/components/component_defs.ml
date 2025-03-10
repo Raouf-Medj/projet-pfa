@@ -107,12 +107,55 @@ class hero () =
     inherit grounded ()
   end
 
+class projectile () =
+object
+  inherit Entity.t ()
+  inherit position ()
+  inherit box ()
+  inherit tagged ()
+  inherit texture ()
+  inherit resolver ()
+  inherit velocity ()
+end
+
+class barrel () =
+object
+  inherit Entity.t ()
+  inherit position ()
+  inherit box ()
+  inherit tagged ()
+  inherit texture ()
+  inherit resolver ()
+  inherit velocity ()
+  inherit grounded ()
+end
+
 class barrier () =
   object
-    inherit resolver()
     inherit Entity.t ()
     inherit position ()
     inherit box ()
     inherit tagged ()
     inherit texture ()
+    inherit resolver()
+  end
+
+class gate () =
+object
+  inherit Entity.t ()
+  inherit position ()
+  inherit box ()
+  inherit tagged ()
+  inherit texture ()
+  inherit resolver()
+end
+
+class spike () =
+  object
+    inherit Entity.t ()
+    inherit position ()
+    inherit box ()
+    inherit tagged ()
+    inherit texture ()
+    inherit resolver()
   end

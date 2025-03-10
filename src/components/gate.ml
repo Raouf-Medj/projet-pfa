@@ -1,0 +1,14 @@
+open Component_defs
+open System_defs
+
+type tag += Gate of gate
+
+let gate x y =
+  let e = new gate () in
+  e#texture#set Texture.black;
+  e#position#set Vector.{x = float x; y = float y};
+  e#tag#set (Gate e);
+  e#box#set Rect.{width = Cst.gate_size; height = Cst.gate_size};
+  Draw_system.(register (e :> t));
+  Collision_system.(register (e :> t));
+  e

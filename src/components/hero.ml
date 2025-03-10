@@ -4,14 +4,12 @@ open System_defs
 
 type tag += Hero of hero
 
-let hero ctx font =
+let hero x y =
   let e = new hero () in
-  let y_orig = float Cst.ball_v_offset in
-  (* e#texture#set Cst.ball_color; *)
   let Global.{textures; _} = Global.get () in
   e#texture#set textures.(0);
-  e#position#set Vector.{x = float Cst.ball_left_x; y = y_orig};
-  e#box#set Rect.{width = Cst.ball_size; height = Cst.ball_size};
+  e#position#set Vector.{x = float x; y = float y};
+  e#box#set Rect.{width = Cst.hero_size; height = Cst.hero_size};
   e#velocity#set Vector.zero;
   e#tag#set (Hero e);
   e#resolve#set (fun n t ->
@@ -23,19 +21,29 @@ let hero ctx font =
       e#position#set (Vector.sub e#position#get n);
       e#velocity#set Vector.zero;
       if e#position#get.y < w#position#get.y then e#is_grounded#set true
+
+    | Gate.Gate g ->
+      let global = Global.get() in
+      global.load_next_scene <- true;
+      Global.set global
+
+    | Threat.Spike s ->
+      Draw_system.(unregister (e :> t));
+      Collision_system.(unregister (e :> t));
+      Move_system.(unregister (e :> t));
+      Gravitate_system.(unregister (e :> t));
+
+      let global = Global.get() in
+      global.restart <- true;
+      Global.set global
+      
     | _ -> ()
   );
-  Draw_system.(register (e :>t));
+  Draw_system.(register (e :> t));
   Collision_system.(register (e :> t));
   Move_system.(register (e :> t));
   Gravitate_system.(register (e :> t));
   e
-
-let random_v b =
-  let a = Random.float (Float.pi/.2.0) -. (Float.pi /. 4.0) in
-  let v = Vector.{x = cos a; y = sin a} in
-  let v = Vector.mult 5.0 (Vector.normalize v) in
-  if b then v else Vector.{ v with x = -. v.x }
 
 let get_hero () = 
   let Global.{hero; _ } = Global.get () in
@@ -55,7 +63,7 @@ let move_hero hero v =
     if v.Vector.y < 0. && hero#is_grounded#get then (
       Gfx.debug "jump\n";
       hero#is_grounded#set false;
-      hero#velocity#set Vector.{ x = 0.; y = -5. }
+      hero#velocity#set Vector.{ x = 0.; y = -6. }
     )
     else (
       if v.Vector.x <> 0. && hero#is_grounded#get then (
