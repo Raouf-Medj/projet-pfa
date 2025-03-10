@@ -20,7 +20,11 @@ let hero x y =
       let n = Rect.penetration_vector s_pos s_rect in
       e#position#set (Vector.sub e#position#get n);
       e#velocity#set Vector.zero;
-      if e#position#get.y < w#position#get.y then e#is_grounded#set true
+      let is_grounded =
+        (e#position#get.y +. float Cst.hero_size <= w#position#get.y +. float Cst.barrel_size /. 3.) &&
+        (n.y > 0.)
+      in
+      if is_grounded then e#is_grounded#set true
 
     | Gate.Gate g ->
       let global = Global.get() in
@@ -57,13 +61,14 @@ let stop_hero () =
   | Some h -> h#velocity#set Vector.zero
   | None -> ()
 
-let move_hero hero v =
+let move_hero hero v spc =
   if Vector.norm hero#velocity#get < 20. then
     (* Gfx.debug "y = %f\n" v.Vector.y; *)
     if v.Vector.y < 0. && hero#is_grounded#get then (
       (* Gfx.debug "jump\n"; *)
       hero#is_grounded#set false;
-      hero#velocity#set Vector.{ x = 0.; y = -6. }
+      if spc then hero#velocity#set Vector.{ x = 0.; y = -. Cst.hero_big_jump }
+      else hero#velocity#set Vector.{ x = 0.; y = -. Cst.hero_small_jump }
     )
     else (
       if v.Vector.x <> 0. && hero#is_grounded#get then (

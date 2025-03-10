@@ -150,12 +150,13 @@ object
   inherit resolver()
 end
 
-class spike () =
+class threat () =
   object
     inherit Entity.t ()
     inherit position ()
     inherit box ()
     inherit tagged ()
     inherit texture ()
+    inherit velocity ()
     inherit resolver()
   end

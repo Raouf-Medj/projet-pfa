@@ -42,7 +42,7 @@ let lvl01 = [|
   "B           BBB         B";
   "B    P                  B";
   "BS  BBBBB               B";
-  "B            P          B";
+  "B            P     R    B";
   "BBBBBBBBBBBBBBBBBBBBBBBBB"
 |]
 
@@ -78,26 +78,42 @@ let run () =
   let window = Gfx.create window_spec in
   let ctx = Gfx.get_context window in
   (* let font = Gfx.load_font Cst.font_name "" 128 in *)
-  let resource_list = Gfx.load_file "resources/files/resource_list.txt" in
-  Gfx.main_loop (fun _dt -> Gfx.get_resource_opt resource_list) (
+  let level_list = Gfx.load_file "resources/files/levels.txt" in
+  Gfx.main_loop (fun _dt -> Gfx.get_resource_opt level_list) (
     fun txt ->
-      let resources = txt
+      let levelz = txt
                       |> String.split_on_char '\n'
                       |> List.filter (fun s -> s <> "")
-                      |> List.map (fun s -> Gfx.load_image ctx ("resources/images/" ^ s))
+                      |> List.map (fun s -> Gfx.load_file ("resources/files/" ^ s))
       in
-      Gfx.main_loop (fun _dt -> if List.for_all Gfx.resource_ready resources then Some (List.map Gfx.get_resource resources) else None) (
-        fun images ->
-          let textures = images
-                         |> List.map (fun img -> Texture.Image img)
+      Gfx.main_loop (fun _dt -> if List.for_all Gfx.resource_ready levelz then Some (List.map Gfx.get_resource levelz) else None) (
+        fun level_texts ->
+          let scenes = level_texts
+                         |> List.map (fun txt -> txt |> String.split_on_char '\n' |> Array.of_list)
                          |> Array.of_list
           in
-          let scenes = [| lvl01; lvl02 |] in
-          let current_scene = -1 in
-          let load_next_scene = true in
-          let restart = false in
-          let global = Global.{ window; ctx; hero = None; textures; scenes; current_scene; load_next_scene; restart } in
-          Global.set global;
-          Gfx.main_loop update (fun () -> ())
+          let resource_list = Gfx.load_file "resources/files/resource_list.txt" in
+          Gfx.main_loop (fun _dt -> Gfx.get_resource_opt resource_list) (
+            fun txt ->
+              let resources = txt
+                              |> String.split_on_char '\n'
+                              |> List.filter (fun s -> s <> "")
+                              |> List.map (fun s -> Gfx.load_image ctx ("resources/images/" ^ s))
+              in
+              Gfx.main_loop (fun _dt -> if List.for_all Gfx.resource_ready resources then Some (List.map Gfx.get_resource resources) else None) (
+                fun images ->
+                  let textures = images
+                                |> List.map (fun img -> Texture.Image img)
+                                |> Array.of_list
+                  in
+                  let current_scene = -1 in
+                  let load_next_scene = true in
+                  let restart = false in
+                  let last_player_proj_dt = 0. in
+                  let global = Global.{ window; ctx; hero = None; textures; scenes; current_scene; load_next_scene; restart; last_player_proj_dt } in
+                  Global.set global;
+                  Gfx.main_loop update (fun () -> ())
+              )
+          )
       )
   )

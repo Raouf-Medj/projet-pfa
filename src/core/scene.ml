@@ -29,7 +29,7 @@ let load scene_index =
         global.hero <- hero;
         Global.set global
       else if c = 'P' then
-        let _ = Threat.threat (j * 32, i * 32 + 16, 32, 16) in
+        let _ = Threat.threat (j * 32, i * 32 + 16, 32, 16, 0) in
         ()
     done
   done

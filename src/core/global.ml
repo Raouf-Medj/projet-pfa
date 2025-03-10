@@ -9,6 +9,7 @@ type t = {
   mutable current_scene : int;
   mutable load_next_scene : bool;
   mutable restart : bool;
+  mutable last_player_proj_dt : float;
 }
 
 let state = ref None
