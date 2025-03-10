@@ -13,7 +13,7 @@ let projectile (x, y, width, height, direction) =
   e#velocity#set dir.(direction);
   e#resolve#set (fun n t ->
     match t#tag#get with
-    | Barrier.Barrier w ->
+    | Barrier.Barrier _ | Barrel.Barrel _ ->
       Draw_system.(unregister (e :> t));
       Collision_system.(unregister (e :> t));
       Move_system.(unregister (e :> t));
@@ -25,6 +25,9 @@ let projectile (x, y, width, height, direction) =
 
     | _ -> ()
   );
+  let global = Global.get () in
+  global.last_player_proj_dt <- Sys.time ();
+  Global.set global;
   Draw_system.(register (e :> t));
   Collision_system.(register (e :> t));
   Move_system.(register (e :> t));
