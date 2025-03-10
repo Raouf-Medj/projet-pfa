@@ -1,2 +1,2 @@
 hero.png
-main_frame.png
+barrier.png
