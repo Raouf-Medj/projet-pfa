@@ -22,7 +22,7 @@ let () =
   register "s" (fun () -> Hero.(move_hero (get_hero()) Cst.down));
   register "d" (fun () -> Hero.(move_hero (get_hero()) Cst.right));
   register "q" (fun () -> Hero.(move_hero (get_hero()) Cst.left));
-  register "ArrowUp" (fun () -> Hero.(move_hero (get_hero()) Cst.up));
-  register "ArrowDown" (fun () -> Hero.(move_hero (get_hero()) Cst.down));
-  register "ArrowRight" (fun () -> Hero.(move_hero (get_hero()) Cst.right));
-  register "ArrowLeft" (fun () -> Hero.(move_hero (get_hero()) Cst.left));
+  register "ArrowUp" (fun () -> let hero = Hero.get_hero () in let _ = Projectile.projectile (hero#position#get.x +. float hero#box#get.width /. 2. -. float Cst.projectile_size /. 2., hero#position#get.y +. float hero#box#get.height /. 2. -. float Cst.projectile_size /. 2., Cst.projectile_size, Cst.projectile_size, 0) in ());
+  register "ArrowDown" (fun () -> let hero = Hero.get_hero () in let _ = Projectile.projectile (hero#position#get.x +. float hero#box#get.width /. 2. -. float Cst.projectile_size /. 2., hero#position#get.y +. float hero#box#get.height /. 2. -. float Cst.projectile_size /. 2., Cst.projectile_size, Cst.projectile_size, 1) in ());
+  register "ArrowRight" (fun () -> let hero = Hero.get_hero () in let _ = Projectile.projectile (hero#position#get.x +. float hero#box#get.width /. 2. -. float Cst.projectile_size /. 2., hero#position#get.y +. float hero#box#get.height /. 2. -. float Cst.projectile_size /. 2., Cst.projectile_size, Cst.projectile_size, 2) in ());
+  register "ArrowLeft" (fun () -> let hero = Hero.get_hero () in let _ = Projectile.projectile (hero#position#get.x +. float hero#box#get.width /. 2. -. float Cst.projectile_size /. 2., hero#position#get.y +. float hero#box#get.height /. 2. -. float Cst.projectile_size /. 2., Cst.projectile_size, Cst.projectile_size, 3) in ());

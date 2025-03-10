@@ -36,7 +36,7 @@ let hero x y =
       let global = Global.get() in
       global.restart <- true;
       Global.set global
-      
+
     | _ -> ()
   );
   Draw_system.(register (e :> t));
@@ -59,15 +59,15 @@ let stop_hero () =
 
 let move_hero hero v =
   if Vector.norm hero#velocity#get < 20. then
-    Gfx.debug "y = %f\n" v.Vector.y;
+    (* Gfx.debug "y = %f\n" v.Vector.y; *)
     if v.Vector.y < 0. && hero#is_grounded#get then (
-      Gfx.debug "jump\n";
+      (* Gfx.debug "jump\n"; *)
       hero#is_grounded#set false;
       hero#velocity#set Vector.{ x = 0.; y = -6. }
     )
     else (
       if v.Vector.x <> 0. && hero#is_grounded#get then (
-        Gfx.debug "lr\n";
+        (* Gfx.debug "lr\n"; *)
         hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x *. 15.; y = 0. }) 
       )
       else
