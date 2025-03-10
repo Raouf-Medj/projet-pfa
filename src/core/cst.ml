@@ -11,6 +11,7 @@ let left_projectile = Vector.{ x = -15.0; y = 0.0 }
 let hero_size = 32
 let barrel_size = 32
 let gate_size = 32
+let projectile_size = 10
 
 
 

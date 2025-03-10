@@ -14,8 +14,7 @@ let update dt =
       global.current_scene <- global.current_scene + 1
     );
     Global.set global;
-    Scene.load (global.current_scene);
-    let _ = Projectile.projectile (200, 590, 10, 10, 0) in ()
+    Scene.load (global.current_scene)
   );
   let () = Input.handle_input () in
   Move_system.update dt;
@@ -70,6 +69,7 @@ let lvl02 = [|
   "BBBBBBBBBBBBBBBBBBBBBBBBB"
 |]
 
+(* lag is due to number of entities *)
 let run () =
   let window_spec =
     Format.sprintf "game_canvas:%dx%d:"
