@@ -1,43 +1,20 @@
-(*
-HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-V                               V
-V  1                         2  V
-V  1 B                       2  V
-V  1                         2  V
-V  1                         2  V
-V                               V
-HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH
-*)
-
-
 let window_width = 800
-let window_height = 600
+let window_height = 640
 let up = Vector.{ x = 0.0; y = -1.0 }
 let down = Vector.{ x = 0.0; y = 1.0 }
 let right = Vector.{ x = 0.2; y = 0.0 }
 let left = Vector.{ x = -0.2; y = 0.0 }
-let player_height = 32
-let player_width = 32
-let player_color = Texture.blue
-let player_x = window_width / 2 - player_width / 2
-let player_y = window_height / 2 - player_height / 2
+let up_projectile = Vector.{ x = 0.0; y = -15.0 }
+let down_projectile = Vector.{ x = 0.0; y = 15.0 }
+let right_projectile = Vector.{ x = 15.0; y = 0.0 }
+let left_projectile = Vector.{ x = -15.0; y = 0.0 }
+let hero_size = 32
+let barrel_size = 32
+let gate_size = 32
 
 
 
 
-
-let paddle_width = 24
-let paddle_height = 128
-
-let paddle1_x = 64 + paddle_width / 2
-let paddle1_y = window_height / 2 - paddle_height / 2
-
-let paddle2_x = window_width - paddle1_x - paddle_width
-let paddle2_y = paddle1_y
-let paddle_color = Texture.blue
-
-let paddle_v_up = Vector.{ x = 0.0; y = -5.0 }
-let paddle_v_down = Vector.sub Vector.zero paddle_v_up
 
 let ball_size = 24
 let ball_color = Texture.red
@@ -54,7 +31,7 @@ let hwall1_x = 0
 let hwall1_y = 0
 let hwall2_x = 0
 let hwall2_y = window_height -  wall_thickness
-let hwall_color = Texture.transparent
+let hwall_color = Texture.green
 
 let vwall_width = wall_thickness
 let vwall_height = window_height - 2 * wall_thickness
@@ -62,7 +39,7 @@ let vwall1_x = 0
 let vwall1_y = wall_thickness
 let vwall2_x = window_width - wall_thickness
 let vwall2_y = vwall1_y
-let vwall_color = Texture.transparent
+let vwall_color = Texture.green
 
 let font_name = if Gfx.backend = "js" then "monospace" else "resources/images/monospace.ttf"
 let font_color = Gfx.color 0 0 0 255

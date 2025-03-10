@@ -8,3 +8,8 @@ let normalize a = mult (1.0 /. norm a) a
 let pp fmt a = Format.fprintf fmt "(%f, %f)" a.x a.y
 let zero = { x = 0.0; y = 0.0 }
 let is_zero v = v.x = 0.0 && v.y = 0.0
+let random_v b =
+  let a = Random.float (Float.pi/.2.0) -. (Float.pi /. 4.0) in
+  let v = {x = cos a; y = sin a} in
+  let v = mult 5.0 (normalize v) in
+  if b then v else { v with x = -. v.x }
