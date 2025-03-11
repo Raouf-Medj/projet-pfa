@@ -3,9 +3,9 @@ open System_defs
 
 type tag += PlayerProjectile of projectile
 
-let projectile (x, y, width, height, direction) =
+let projectile (x, y, width, height, txt, direction) =
   let e = new projectile () in
-  e#texture#set Texture.purple;
+  e#texture#set txt;
   e#position#set Vector.{x; y};
   e#tag#set (PlayerProjectile e);
   e#box#set Rect.{width; height};
@@ -20,6 +20,10 @@ let projectile (x, y, width, height, direction) =
       Gravitate_system.(unregister (e :> t));
 
     | Threat.Spike s ->
+      Draw_system.(unregister (e :> t));
+      Collision_system.(unregister (e :> t));
+      Move_system.(unregister (e :> t));
+      Gravitate_system.(unregister (e :> t));
       Draw_system.(unregister (s :> t));
       Collision_system.(unregister (s :> t))
 

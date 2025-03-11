@@ -23,52 +23,6 @@ let update dt =
   Draw_system.update dt;
   None
 
-let lvl01 = [|
-  "BBBBBBBBBBBBBBBBBBBBBBBBB";
-  "B                       G";
-  "B                       G";
-  "B               BBBBBBBBB";
-  "B                       B";
-  "B        BBB            B";
-  "B                       B";
-  "B  B                    B";
-  "B                       B";
-  "B     BB                B";
-  "B                       B";
-  "B           BBB         B";
-  "B                  RP   B";
-  "B                  BB   B";
-  "B            P          B";
-  "B           BBB         B";
-  "B    P                  B";
-  "BS  BBBBB               B";
-  "B            P     R    B";
-  "BBBBBBBBBBBBBBBBBBBBBBBBB"
-|]
-
-let lvl02 = [|
-  "BBBBBBBBBBBBBBBBBBBBBBBBB";
-  "B                       B";
-  "B                       B";
-  "B                BBB    B";
-  "B                       B";
-  "B        BBB            B";
-  "B                       B";
-  "B  B                    B";
-  "B                       B";
-  "B     BB                B";
-  "B                       B";
-  "B           BBB         B";
-  "B                       B";
-  "B                  BB   B";
-  "B                       B";
-  "B           BBB         B";
-  "B                       B";
-  "BS  BBBBB               B";
-  "B                       B";
-  "BBBBBBBBBBBBBBBBBBBBBBBBB"
-|]
-
 (* lag is due to number of entities *)
 let run () =
   let window_spec =
