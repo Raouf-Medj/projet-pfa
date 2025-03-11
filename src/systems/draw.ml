@@ -12,10 +12,10 @@ let update _dt el =
   let Global.{window;ctx;_} = Global.get () in
   let surface = Gfx.get_surface window in
   let ww, wh = Gfx.get_context_logical_size ctx in
-  Gfx.set_color ctx white;
-  Gfx.fill_rect ctx surface 0 0 ww wh;
-  (* let Global.{ textures; _ } = Global.get () in
-  Texture.draw ctx surface Vector.zero Rect.{width=ww;height=wh} textures.(1); *)
+  (* Gfx.set_color ctx white;
+  Gfx.fill_rect ctx surface 0 0 ww wh; *)
+  let Global.{ textures; _ } = Global.get () in
+  Texture.draw ctx surface Vector.zero Rect.{width=ww;height=wh} textures.(2);
   Seq.iter (fun (e:t) ->
       let pos = e#position#get in
       let box = e#box#get in

@@ -1,2 +1,7 @@
 hero.png
 barrier.png
+bg.png
+projectile_up.png
+projectile_down.png
+projectile_right.png
+projectile_left.png
