@@ -20,7 +20,6 @@ let run () =
   in
   let window = Gfx.create window_spec in
   let ctx = Gfx.get_context window in
-  (* let font = Gfx.load_font Cst.font_name "" 128 in *)
   let level_list = Gfx.load_file "resources/files/levels.txt" in
   Gfx.main_loop (fun _dt -> Gfx.get_resource_opt level_list) (
     fun txt ->

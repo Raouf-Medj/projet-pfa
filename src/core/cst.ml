@@ -44,6 +44,4 @@ let vwall1_y = wall_thickness
 let vwall2_x = window_width - wall_thickness
 let vwall2_y = vwall1_y
 let vwall_color = Texture.green
-
-let font_name = if Gfx.backend = "js" then "monospace" else "resources/images/monospace.ttf"
 let font_color = Gfx.color 0 0 0 255

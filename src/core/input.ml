@@ -18,10 +18,12 @@ let handle_input () =
 
 let () =
   register "z" (fun () -> Hero.(move_hero (get_hero()) Cst.up false));
+  register "Z" (fun () -> Hero.(move_hero (get_hero()) Cst.up false));
   register " " (fun () -> Hero.(move_hero (get_hero()) Cst.up true));
-  (* register "s" (fun () -> Hero.(move_hero (get_hero()) Cst.down false)); *)
   register "d" (fun () -> Hero.(move_hero (get_hero()) Cst.right false));
+  register "D" (fun () -> Hero.(move_hero (get_hero()) Cst.right false));
   register "q" (fun () -> Hero.(move_hero (get_hero()) Cst.left false));
+  register "Q" (fun () -> Hero.(move_hero (get_hero()) Cst.left false));
   let gen_proj dir =
     let Global.{ last_player_proj_dt; textures; _ } = Global.get () in
     if Sys.time () -. last_player_proj_dt < Cst.player_proj_cd then ()

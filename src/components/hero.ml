@@ -32,10 +32,7 @@ let hero x y =
       Global.set global
 
     | Threat.Spike s ->
-      Draw_system.(unregister (e :> t));
-      Collision_system.(unregister (e :> t));
-      Move_system.(unregister (e :> t));
-      Gravitate_system.(unregister (e :> t));
+      e#health#set (e#health#get - 1);
 
       let global = Global.get() in
       global.restart <- true;
@@ -84,7 +81,7 @@ let move_hero hero v spc =
       )
       else (
         (* Gfx.debug "lr\n"; *)
-        hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x *. 7.; y = -. Cst.gravity })
+        hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x *. 20.; y = -. Cst.gravity })
       )
     )
     else
