@@ -44,6 +44,12 @@ object
   method is_grounded = r
 end
 
+class health () =
+let r = Component.init 3 in
+object
+  method health = r
+end
+
 (** Interfaces : ici on liste simplement les types des classes dont on hérite
     si deux classes définissent les mêmes méthodes, celles de la classe écrite
     après sont utilisées (héritage multiple).
@@ -80,6 +86,12 @@ class type gravitational =
     inherit velocity
   end
 
+class type killable =
+object
+  inherit Entity.t
+  inherit health
+end
+
 (** Entités :
     Ici, dans inherit, on appelle les constructeurs pour qu'ils initialisent
     leur partie de l'objet, d'où la présence de l'argument ()
@@ -95,6 +107,7 @@ class hero () =
     inherit resolver ()
     inherit velocity ()
     inherit grounded ()
+    inherit health ()
   end
 
 class projectile () =
@@ -149,4 +162,5 @@ class threat () =
     inherit texture ()
     inherit velocity ()
     inherit resolver()
+    inherit health ()
   end
