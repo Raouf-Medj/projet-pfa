@@ -19,7 +19,7 @@ let handle_input () =
 let () =
   register "z" (fun () -> Hero.(move_hero (get_hero()) Cst.up false));
   register " " (fun () -> Hero.(move_hero (get_hero()) Cst.up true));
-  register "s" (fun () -> Hero.(move_hero (get_hero()) Cst.down false));
+  (* register "s" (fun () -> Hero.(move_hero (get_hero()) Cst.down false)); *)
   register "d" (fun () -> Hero.(move_hero (get_hero()) Cst.right false));
   register "q" (fun () -> Hero.(move_hero (get_hero()) Cst.left false));
   let gen_proj dir =
@@ -27,7 +27,9 @@ let () =
     if Sys.time () -. last_player_proj_dt < Cst.player_proj_cd then ()
     else (
       let hero = Hero.get_hero () in
-      let _ = Projectile.projectile (hero#position#get.x +. float hero#box#get.width /. 2. -. float Cst.projectile_size /. 2., hero#position#get.y +. float hero#box#get.height /. 2. -. float Cst.projectile_size /. 2., Cst.projectile_size, Cst.projectile_size, textures.(dir + 3), dir) 
+      let _ = Projectile.projectile (hero#position#get.x +. float hero#box#get.width /. 2. -. float Cst.projectile_size /. 2., 
+                                     hero#position#get.y +. float hero#box#get.height /. 2. -. float Cst.projectile_size /. 2., 
+                                     Cst.projectile_size, Cst.projectile_size, textures.(dir + 3), dir) 
       in ()
     )
   in

@@ -3,21 +3,10 @@ open Component_defs
 open Ecs
 
 let update dt =
-  let global = Global.get() in
-  if global.load_next_scene || global.restart then (
-    Scene.reset ();
-    if global.restart then (
-      global.restart <- false;
-    )
-    else (
-      global.load_next_scene <- false;
-      global.current_scene <- global.current_scene + 1
-    );
-    Global.set global;
-    Scene.load (global.current_scene)
-  );
+  let () = Scene.update_scene () in
   let () = Input.handle_input () in
   Move_system.update dt;
+  let () = Hero.reset_hero_gravity () in
   Collision_system.update dt;
   Gravitate_system.update dt;
   Draw_system.update dt;

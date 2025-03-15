@@ -84,16 +84,6 @@ class type gravitational =
     Ici, dans inherit, on appelle les constructeurs pour qu'ils initialisent
     leur partie de l'objet, d'où la présence de l'argument ()
 *)
-class player name =
-  object
-    inherit Entity.t ~name ()
-    inherit position ()
-    inherit box ()
-    inherit tagged ()
-    inherit texture ()
-    inherit resolver ()
-    inherit velocity ()
-  end
 
 class hero () =
   object
