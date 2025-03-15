@@ -1,7 +1,7 @@
 let window_width = 800
 let window_height = 640
 let up = Vector.{ x = 0.0; y = -1.0 }
-let down = Vector.{ x = 0.0; y = 1.0 }
+(* let down = Vector.{ x = 0.0; y = 1.0 } *)
 let right = Vector.{ x = 0.2; y = 0.0 }
 let left = Vector.{ x = -0.2; y = 0.0 }
 let up_projectile = Vector.{ x = 0.0; y = -15.0 }
@@ -15,7 +15,8 @@ let barrel_size = 32
 let gate_size = 32
 let projectile_size = 10
 let player_proj_cd = 0.5
-
+let gravity = 0.3
+let hero_max_velocity = 10.
 
 
 

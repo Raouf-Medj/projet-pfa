@@ -61,20 +61,32 @@ let stop_hero () =
   | Some h -> h#velocity#set Vector.zero
   | None -> ()
 
+let reset_hero_gravity () =
+  let global = Global.get() in
+  match global.hero with
+  | None -> ()
+  | Some h -> (
+    h#is_grounded#set false;
+    global.hero <- Some(h);
+    Global.set global
+  )
+
 let move_hero hero v spc =
-  if Vector.norm hero#velocity#get < 20. then
-    (* Gfx.debug "y = %f\n" v.Vector.y; *)
-    if v.Vector.y < 0. && hero#is_grounded#get then (
-      (* Gfx.debug "jump\n"; *)
-      hero#is_grounded#set false;
-      if spc then hero#velocity#set Vector.{ x = 0.; y = -. Cst.hero_big_jump }
-      else hero#velocity#set Vector.{ x = 0.; y = -. Cst.hero_small_jump }
-    )
-    else (
-      if v.Vector.x <> 0. && hero#is_grounded#get then (
-        (* Gfx.debug "lr\n"; *)
-        hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x *. 15.; y = 0. }) 
+  if Vector.norm hero#velocity#get < Cst.hero_max_velocity then (
+    (* Gfx.debug "POS: x = %f, y = %f\n" hero#position#get.Vector.x hero#position#get.Vector.y; *)
+    (* Gfx.debug "VEL: x = %f, y = %f\n" hero#velocity#get.Vector.x hero#velocity#get.Vector.y; *)
+    if hero#is_grounded#get then (
+      if v.Vector.y < 0. then (
+        (* hero#is_grounded#set false; *)
+        (* Gfx.debug "jump\n"; *)
+        if spc then hero#velocity#set Vector.{ x = 0.; y = -. Cst.hero_big_jump }
+        else hero#velocity#set Vector.{ x = 0.; y = -. Cst.hero_small_jump }
       )
-      else
-        hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x; y = 0. })
+      else (
+        (* Gfx.debug "lr\n"; *)
+        hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x *. 7.; y = -. Cst.gravity })
+      )
     )
+    else
+      hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x; y = 0. })
+  )

@@ -10,5 +10,5 @@ let update _ el =
     let pos = e#position#get in
     let vel = e#velocity#get in
     (* if Vector.(norm vel) > 10. then Gfx.debug "vel: %f\n" Vector.(norm vel); *)
-    e#position#set (Vector.add pos vel)  
+    e#position#set (Vector.add pos vel)
   ) el

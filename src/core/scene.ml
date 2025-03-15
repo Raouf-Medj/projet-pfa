@@ -34,3 +34,17 @@ let load scene_index =
     done
   done
   
+let update_scene () =
+  let global = Global.get() in
+  if global.load_next_scene || global.restart then (
+    reset ();
+    if global.restart then (
+      global.restart <- false;
+    )
+    else (
+      global.load_next_scene <- false;
+      global.current_scene <- global.current_scene + 1
+    );
+    Global.set global;
+    load (global.current_scene)
+  )
