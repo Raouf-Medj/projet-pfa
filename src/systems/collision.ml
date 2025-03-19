@@ -4,6 +4,8 @@ open Component_defs
 type t = collidable
 
 let init _ = ()
+(*Pourquoi ne fait rien ?*)
+
 
 let rec iter_pairs f s =
   match s () with

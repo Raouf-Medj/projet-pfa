@@ -4,6 +4,8 @@ open System_defs
 
 type tag += Hero of hero
 
+
+
 let hero x y =
   let e = new hero () in
   let Global.{textures; _} = Global.get () in
@@ -11,6 +13,7 @@ let hero x y =
   e#position#set Vector.{x = float x; y = float y};
   e#box#set Rect.{width = Cst.hero_size; height = Cst.hero_size};
   e#velocity#set Vector.zero;
+  e#set_damage_cooldown 2.;
   e#tag#set (Hero e);
   e#resolve#set (fun n t ->
     match t#tag#get with
@@ -32,12 +35,31 @@ let hero x y =
       Global.set global
 
     | Threat.Spike s ->
-      e#health#set (e#health#get - 1);
+      if e#get_damage_cooldown <= 0. then(
+        if (e#health#get >1) then( e#health#set (e#health#get - 1))
+        else(
+            let global = Global.get() in
+            global.restart <- true;
+            Global.set global
+        );
+        e#set_damage_cooldown 60.;
+      )
 
-      let global = Global.get() in
-      global.restart <- true;
-      Global.set global
-
+      | Potion.Potion s ->
+        if e#health#get < 3 then e#health#set (e#health#get + 1);
+        
+        (* Rendre la potion inactive *)
+        s#position#set Vector.{ x = -1000.; y = -1000. }; (* La déplacer hors de l'écran *)
+    
+        (* Désenregistrer la potion des systèmes *)
+        Draw_system.(unregister (s :> t));
+        Collision_system.(unregister (s :> t));
+    
+        let global = Global.get() in
+        global.restart <- false;
+        Global.set global
+    
+    
     | _ -> ()
   );
   Draw_system.(register (e :> t));
@@ -87,3 +109,6 @@ let move_hero hero v spc =
     else
       hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x; y = 0. })
   )
+  let update_hero_cooldown (hero : hero) =
+    if hero#get_damage_cooldown > 0. then
+      hero#set_damage_cooldown (hero#get_damage_cooldown -. 1.)
