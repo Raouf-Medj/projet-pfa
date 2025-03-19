@@ -39,6 +39,9 @@ let barrel x y =
       let n = Rect.penetration_vector s_pos s_rect in
       e#position#set (Vector.sub e#position#get n);
       e#velocity#set Vector.zero
+    | Threat.Spike t -> 
+      let vel = t#velocity#get in
+      t#velocity#set Vector.{x = -.vel.x; y = vel.y}
     | _ -> ()
   );
   Draw_system.(register (e :>t));
