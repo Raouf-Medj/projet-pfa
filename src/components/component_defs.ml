@@ -162,9 +162,15 @@ class threat () =
     inherit box ()
     inherit tagged ()
     inherit texture ()
+    inherit resolver ()
     inherit velocity ()
-    inherit resolver()
-    inherit health ()
+    val mutable platform_left = 0.0
+    val mutable platform_right = 0.0
+    method set_platform_boundaries left right =
+      platform_left <- left;
+      platform_right <- right
+    method get_platform_left = platform_left
+    method get_platform_right = platform_right
   end
   
 class potion () =

@@ -8,6 +8,34 @@ let reset () =
   Draw_system.reset ();
   Move_system.reset ()
 
+  let find_platform_boundaries scene i j =
+    let left = ref j in
+    let right = ref j in
+    let row_length = String.length scene.(i) in
+    let height = Array.length scene in
+  
+    (* Vérifie si c'est un mur ou du sol *)
+    let is_wall c = (c = 'B') in
+  
+    (* Vérifie si l'ennemi peut marcher sur la case *)
+    let is_safe_ground i j =
+      i + 1 < height && scene.(i + 1).[j] = 'B'  (* Vérifie que sous la case actuelle il y a du sol *)
+    in
+  
+    (* Recherche vers la gauche *)
+    while !left > 0 && not (is_wall scene.(i).[!left - 1]) && is_safe_ground i (!left - 1) do
+      decr left
+    done;
+  
+    (* Recherche vers la droite *)
+    while !right < row_length - 1 && not (is_wall scene.(i).[!right + 1]) && is_safe_ground i (!right + 1) do
+      incr right
+    done;
+  
+    (* Retourne les coordonnées en pixels *)
+    (float_of_int !left *. 32., float_of_int (!right + 1) *. 32.)
+  
+
 let load scene_index =
   let global = Global.get () in
   let scene = global.scenes.(scene_index) in
@@ -29,7 +57,8 @@ let load scene_index =
         global.hero <- hero;
         Global.set global
       else if c = 'P' then
-        let _ = Threat.threat (j * 32, i * 32 + 16, 32, 16, 0) in
+        let platform_left, platform_right = find_platform_boundaries scene i j in
+        let _ = Threat.threat (j * 32, i * 32 + 16, 32, 16, 0, platform_left, platform_right) in
         ()
       else if c = 'H' then 
         let _ = Potion.potion (j * 32, i * 32 + 16, 32, 16, 0) in
