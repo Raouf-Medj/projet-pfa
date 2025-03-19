@@ -52,6 +52,9 @@ let load scene_index =
       else if c = 'G' then
         let _ = Gate.gate (j * 32) (i * 32) in
         ()
+      else if c = 'K' then
+        let _ = Key.key (j * 32) (i * 32) in
+        ()
       else if c = 'S' then
         let hero = Some (Hero.hero (j * 32) (i * 32)) in
         global.hero <- hero;

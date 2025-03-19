@@ -13,6 +13,7 @@ let hero_small_jump = 5.0
 let hero_big_jump = 6.5
 let barrel_size = 32
 let gate_size = 32
+let key_size = 16  
 let projectile_size = 10
 let player_proj_cd = 0.5
 let gravity = 0.3
