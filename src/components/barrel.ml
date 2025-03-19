@@ -34,14 +34,24 @@ let barrel x y =
         h#position#set (Vector.add h#position#get n);
         h#velocity#set Vector.zero
       )
-    | Barrel h ->
-      let s_pos, s_rect = Rect.mdiff e#position#get e#box#get h#position#get h#box#get in
-      let n = Rect.penetration_vector s_pos s_rect in
-      e#position#set (Vector.sub e#position#get n);
-      e#velocity#set Vector.zero
+      | Barrel h ->
+        let s_pos, s_rect = Rect.mdiff e#position#get e#box#get h#position#get h#box#get in
+        let n = Rect.penetration_vector s_pos s_rect in
+        let is_on_top = n.y < 0. in
+        if is_on_top then (
+          h#position#set (Vector.add h#position#get n);
+          h#velocity#set Vector.zero;
+          e#is_grounded#set true
+        ) else (
+          e#position#set (Vector.sub e#position#get n);
+          e#velocity#set Vector.zero
+        )
     | Threat.Spike t -> 
       let vel = t#velocity#get in
       t#velocity#set Vector.{x = -.vel.x; y = vel.y}
+      (*if a barrel is pushed into a spike, it traps the enemy*)
+
+      
     | _ -> ()
   );
   Draw_system.(register (e :>t));
