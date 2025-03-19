@@ -50,7 +50,10 @@ let load scene_index =
         let _ = Barrel.barrel (j * 32) (i * 32) in
         ()
       else if c = 'G' then
-        let _ = Gate.gate (j * 32) (i * 32) in
+        let _ = Gate.gate (j * 32) (i * 32) false in
+        ()
+      else if c = 'g' then
+        let _ = Gate.gate (j * 32) (i * 32) true in
         ()
       else if c = 'K' then
         let _ = Key.key (j * 32) (i * 32) in
