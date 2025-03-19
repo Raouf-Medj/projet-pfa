@@ -110,6 +110,10 @@ class hero () =
     val mutable damage_cooldown = 0.
     method set_damage_cooldown (cooldown : float) : unit = damage_cooldown <- cooldown
     method get_damage_cooldown : float = damage_cooldown
+    val mutable has_key = false
+    method has_key = has_key
+    method collect_key = has_key <- true
+    method use_key = has_key <- false
   end
 
 class projectile () =
@@ -153,6 +157,19 @@ object
   inherit tagged ()
   inherit texture ()
   inherit resolver()
+  val mutable locked = true
+  method is_locked = locked
+  method unlock = locked <- false
+end
+
+class key () =
+object
+  inherit Entity.t ()
+  inherit position ()
+  inherit box ()
+  inherit resolver()
+  inherit tagged ()
+  inherit texture ()
 end
 
 class threat () =

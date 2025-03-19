@@ -4,8 +4,6 @@ open System_defs
 
 type tag += Hero of hero
 
-
-
 let hero x y =
   let e = new hero () in
   let Global.{textures; _} = Global.get () in
@@ -18,7 +16,6 @@ let hero x y =
   e#resolve#set (fun n t ->
     match t#tag#get with
     | Barrier.Barrier w ->
-      (* e#velocity#set Vector.{ x = e#velocity#get.x *. n.x; y = e#velocity#get.y *. n.y } *)
       let s_pos, s_rect = Rect.mdiff e#position#get e#box#get w#position#get w#box#get in
       let n = Rect.penetration_vector s_pos s_rect in
       e#position#set (Vector.sub e#position#get n);
@@ -30,36 +27,52 @@ let hero x y =
       if is_grounded then e#is_grounded#set true
 
     | Gate.Gate g ->
-      let global = Global.get() in
-      global.load_next_scene <- true;
-      Global.set global
+      if g#is_locked then
+        if e#has_key then (
+          g#unlock;
+          e#use_key
+        ) else (
+          let s_pos, s_rect = Rect.mdiff e#position#get e#box#get g#position#get g#box#get in
+          let n = Rect.penetration_vector s_pos s_rect in
+          e#position#set (Vector.sub e#position#get n);
+          e#velocity#set Vector.zero;
+          let is_grounded =
+            (e#position#get.y +. float Cst.hero_size <= g#position#get.y +. float Cst.barrel_size /. 3.) &&
+            (n.y > 0.)
+          in
+          if is_grounded then e#is_grounded#set true
+        )
+      else
+        let global = Global.get() in
+        global.load_next_scene <- true;
+        Global.set global
+
+    | Key.Key k ->
+      e#collect_key;
+      k#position#set Vector.{ x = -1000.; y = -1000. };
+      Draw_system.(unregister (k :> t));
+      Collision_system.(unregister (k :> t));
 
     | Threat.Spike s ->
-      if e#get_damage_cooldown <= 0. then(
-        if (e#health#get >1) then( e#health#set (e#health#get - 1))
-        else(
-            let global = Global.get() in
-            global.restart <- true;
-            Global.set global
+      if e#get_damage_cooldown <= 0. then (
+        if e#health#get > 1 then e#health#set (e#health#get - 1)
+        else (
+          let global = Global.get() in
+          global.restart <- true;
+          Global.set global
         );
         e#set_damage_cooldown 60.;
       )
 
-      | Potion.Potion s ->
-        if e#health#get < 3 then e#health#set (e#health#get + 1);
-        
-        (* Rendre la potion inactive *)
-        s#position#set Vector.{ x = -1000.; y = -1000. }; (* La déplacer hors de l'écran *)
-    
-        (* Désenregistrer la potion des systèmes *)
-        Draw_system.(unregister (s :> t));
-        Collision_system.(unregister (s :> t));
-    
-        let global = Global.get() in
-        global.restart <- false;
-        Global.set global
-    
-    
+    | Potion.Potion s ->
+      if e#health#get < 3 then e#health#set (e#health#get + 1);
+      s#position#set Vector.{ x = -1000.; y = -1000. };
+      Draw_system.(unregister (s :> t));
+      Collision_system.(unregister (s :> t));
+      let global = Global.get() in
+      global.restart <- false;
+      Global.set global
+
     | _ -> ()
   );
   Draw_system.(register (e :> t));
@@ -92,23 +105,17 @@ let reset_hero_gravity () =
 
 let move_hero hero v spc =
   if Vector.norm hero#velocity#get < Cst.hero_max_velocity then (
-    (* Gfx.debug "POS: x = %f, y = %f\n" hero#position#get.Vector.x hero#position#get.Vector.y; *)
-    (* Gfx.debug "VEL: x = %f, y = %f\n" hero#velocity#get.Vector.x hero#velocity#get.Vector.y; *)
     if hero#is_grounded#get then (
       if v.Vector.y < 0. then (
-        (* hero#is_grounded#set false; *)
-        (* Gfx.debug "jump\n"; *)
         if spc then hero#velocity#set Vector.{ x = 0.; y = -. Cst.hero_big_jump }
         else hero#velocity#set Vector.{ x = 0.; y = -. Cst.hero_small_jump }
-      )
-      else (
-        (* Gfx.debug "lr\n"; *)
+      ) else (
         hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x *. 20.; y = -. Cst.gravity })
       )
-    )
-    else
+    ) else
       hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x; y = 0. })
   )
-  let update_hero_cooldown (hero : hero) =
-    if hero#get_damage_cooldown > 0. then
-      hero#set_damage_cooldown (hero#get_damage_cooldown -. 1.)
+
+let update_hero_cooldown (hero : hero) =
+  if hero#get_damage_cooldown > 0. then
+    hero#set_damage_cooldown (hero#get_damage_cooldown -. 1.)
