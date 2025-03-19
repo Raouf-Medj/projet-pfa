@@ -31,6 +31,9 @@ let load scene_index =
       else if c = 'P' then
         let _ = Threat.threat (j * 32, i * 32 + 16, 32, 16, 0) in
         ()
+      else if c = 'H' then 
+        let _ = Potion.potion (j * 32, i * 32 + 16, 32, 16, 0) in
+        ()
     done
   done
   

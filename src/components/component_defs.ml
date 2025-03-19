@@ -96,7 +96,6 @@ end
     Ici, dans inherit, on appelle les constructeurs pour qu'ils initialisent
     leur partie de l'objet, d'où la présence de l'argument ()
 *)
-
 class hero () =
   object
     inherit Entity.t ()
@@ -108,6 +107,9 @@ class hero () =
     inherit velocity ()
     inherit grounded ()
     inherit health ()
+    val mutable damage_cooldown = 0.
+    method set_damage_cooldown (cooldown : float) : unit = damage_cooldown <- cooldown
+    method get_damage_cooldown : float = damage_cooldown
   end
 
 class projectile () =
@@ -164,3 +166,14 @@ class threat () =
     inherit resolver()
     inherit health ()
   end
+  
+class potion () =
+  object
+    inherit Entity.t ()
+    inherit position ()
+    inherit box ()
+    inherit tagged ()
+    inherit texture ()
+    inherit resolver()
+  end
+  
