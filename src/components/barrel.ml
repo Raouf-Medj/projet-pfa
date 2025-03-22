@@ -20,7 +20,8 @@ let barrel x y =
       let n = Rect.penetration_vector s_pos s_rect in
       e#position#set (Vector.sub e#position#get n);
       e#velocity#set Vector.zero;
-      if n.y > 0. then e#is_grounded#set true
+      if n.y > 0. then e#is_grounded#set true;
+      Move_system.(unregister (e :> t))
     | Hero.Hero h ->
       let s_pos, s_rect = Rect.mdiff e#position#get e#box#get h#position#get h#box#get in
       let n = Rect.penetration_vector s_pos s_rect in
@@ -34,6 +35,7 @@ let barrel x y =
         h#position#set (Vector.add h#position#get n);
         h#velocity#set Vector.zero
       )
+      
       | Barrel h ->
         let s_pos, s_rect = Rect.mdiff e#position#get e#box#get h#position#get h#box#get in
         let n = Rect.penetration_vector s_pos s_rect in
