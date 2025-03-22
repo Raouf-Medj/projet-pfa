@@ -46,10 +46,10 @@ let barrel x y =
           e#position#set (Vector.sub e#position#get n);
           e#velocity#set Vector.zero
         )
-    | Threat.Spike t -> 
+    | Threat.Darkie t -> 
       let vel = t#velocity#get in
       t#velocity#set Vector.{x = -.vel.x; y = vel.y}
-      (*if a barrel is pushed into a spike, it traps the enemy*)
+      (*if a barrel is pushed into a darkie, it traps the enemy*)
 
       
     | _ -> ()

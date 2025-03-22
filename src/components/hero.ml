@@ -53,7 +53,7 @@ let hero x y =
       Draw_system.(unregister (k :> t));
       Collision_system.(unregister (k :> t));
 
-    | Threat.Spike s ->
+    | Threat.Darkie s | Threat.Spike s->
       if e#get_damage_cooldown <= 0. then (
         if e#health#get > 1 then e#health#set (e#health#get - 1)
         else (
