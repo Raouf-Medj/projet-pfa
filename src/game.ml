@@ -12,8 +12,8 @@ let update dt =
   Draw_system.update dt;
   let hero = Hero.get_hero () in
   Hero.update_hero_cooldown hero;
-  (* Update spike positions *)
-  List.iter (fun spike -> Threat.update_spike_position spike) !Threat.spikes;
+  (* Update darkie positions *)
+  List.iter (fun darkie -> Threat.update_darkie_position darkie) !Threat.darkies;
   None
 
 (* lag is due to number of entities *)
