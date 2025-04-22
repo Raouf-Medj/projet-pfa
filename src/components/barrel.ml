@@ -6,9 +6,8 @@ type tag += Barrel of barrel
 
 let barrel x y =
   let e = new barrel () in
-  e#texture#set Texture.yellow;
-  (* let Global.{textures; _} = Global.get () in
-  e#texture#set textures.(0); *)
+  (* e#texture#set Texture.yellow; *)
+  e#texture#set (let Global.{textures; _} = Global.get () in textures.(7));
   e#position#set Vector.{x = float x; y = float y};
   e#box#set Rect.{width = Cst.barrel_size; height = Cst.barrel_size};
   e#velocity#set Vector.zero;

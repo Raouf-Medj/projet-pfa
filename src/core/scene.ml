@@ -62,14 +62,26 @@ let load scene_index =
         global.hero <- hero;
         Global.set global
       else if c = 'P' then
+        let _ = Threat.threat (j * 32, i * 32 + 16, 32, 16, 1) () in
+        ()
+      else if c = 'p' then
         let platform_left, platform_right = find_platform_boundaries scene i j in
         let _ = Threat.threat (j * 32, i * 32 + 16, 32, 16, 0) ~platform_left ~platform_right () in
         ()
-      else if c = 'p' then
-        let _ = Threat.threat (j * 32, i * 32 + 16, 32, 16, 1) () in
-        ()
       else if c = 'H' then 
-        let _ = Potion.potion (j * 32, i * 32 + 16, 32, 16, 0) in
+        let _ = Potion.potion (j * 32, i * 32 - 16, 24, 24) in
+        ()
+      else if c = '0' then (* Eternal sun *)
+        let _ = Sun.sun (j * 32, i * 32 - 32*3, 128, 128, 0) in
+        ()
+      else if c = '1' then (* Power fragment *)
+        let _ = Sun.sun (j * 32, i * 32 - 32, 64, 64, 1) in
+        ()
+      else if c = '2' then (* Hope fragment *)
+        let _ = Sun.sun (j * 32, i * 32 - 32, 64, 64, 2) in
+        ()
+      else if c = '3' then (* Wisdom fragment *)
+        let _ = Sun.sun (j * 32, i * 32 - 32, 64, 64, 3) in
         ()
     done
   done
