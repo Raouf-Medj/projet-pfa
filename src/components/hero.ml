@@ -11,7 +11,7 @@ let hero x y =
   e#position#set Vector.{x = float x; y = float y};
   e#box#set Rect.{width = Cst.hero_size; height = Cst.hero_size};
   e#velocity#set Vector.zero;
-  e#set_damage_cooldown 2.;
+  e#damage_cooldown#set 2.;
   e#tag#set (Hero e);
   e#resolve#set (fun n t ->
     match t#tag#get with
@@ -27,8 +27,8 @@ let hero x y =
       if is_grounded then e#is_grounded#set true
 
     | Gate.Gate g ->
-      if g#is_locked then
-        if e#has_key then (
+      if g#is_locked#get then
+        if e#has_key#get then (
           g#unlock;
           e#use_key
         ) else (
@@ -54,14 +54,14 @@ let hero x y =
       Collision_system.(unregister (k :> t));
 
     | Threat.Darkie s | Threat.Spike s->
-      if e#get_damage_cooldown <= 0. then (
+      if e#damage_cooldown#get <= 0. then (
         if e#health#get > 1 then e#health#set (e#health#get - 1)
         else (
           let global = Global.get() in
           global.restart <- true;
           Global.set global
         );
-        e#set_damage_cooldown 60.;
+        e#damage_cooldown#set 60.;
       )
 
     | Potion.Potion s ->
@@ -117,5 +117,5 @@ let move_hero hero v spc =
   )
 
 let update_hero_cooldown (hero : hero) =
-  if hero#get_damage_cooldown > 0. then
-    hero#set_damage_cooldown (hero#get_damage_cooldown -. 1.)
+  if hero#damage_cooldown#get > 0. then
+    hero#damage_cooldown#set (hero#damage_cooldown#get -. 1.)

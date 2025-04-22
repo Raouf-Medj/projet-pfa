@@ -8,6 +8,17 @@ let init _ = ()
 
 let white = Gfx.color 255 255 255 255
 
+let render_health ctx surface (hlt : int) (max_hlt : int) =
+  let full_heart = "❤️" in
+  let empty_heart = "💔" in
+  let heart_string =
+    String.concat ""
+      (List.init max_hlt (fun i -> if i < hlt then full_heart else empty_heart))
+  in
+  Texture.render_text ctx surface Vector.zero
+    Rect.{ width = 100; height = 80 }
+    heart_string Texture.blue 25
+
 let update _dt el =
   let Global.{window; ctx; hero; _} = Global.get () in
   let surface = Gfx.get_surface window in
@@ -22,11 +33,8 @@ let update _dt el =
     let txt = e#texture#get in
     Texture.draw ctx surface pos box txt
   ) el;
-  let hlt = (match hero with
-  | Some h -> h#health#get
+  let hlt, max_hlt = (match hero with
+  | Some h -> h#health#get, h#max_health#get
   | None -> failwith "No hero") in
-  if hlt = 3 then Texture.render_text ctx surface Vector.zero Rect.{width=100;height=80} "❤️❤️❤️" Texture.blue 25
-  else if hlt = 2 then Texture.render_text ctx surface Vector.zero Rect.{width=100;height=80} "❤️❤️💔" Texture.blue 25
-  else if hlt = 1 then Texture.render_text ctx surface Vector.zero Rect.{width=100;height=80} "❤️💔💔" Texture.blue 25
-  else if hlt = 0 then Texture.render_text ctx surface Vector.zero Rect.{width=100;height=80} "💔💔💔" Texture.blue 25;
+  render_health ctx surface hlt max_hlt;
   Gfx.commit ctx
