@@ -45,9 +45,44 @@ object
 end
 
 class health () =
-let r = Component.init 3 in
+let r = Component.init 2 in
 object
   method health = r
+end
+
+class max_health () =
+let r = Component.init 2 in
+object
+  method max_health = r
+end
+
+class damage_cooldown () =
+let r = Component.init 0. in
+object
+  method damage_cooldown = r
+end
+
+class has_key () =
+let r = Component.init false in
+object
+  method has_key = r
+  method collect_key = r#set true
+  method use_key = r#set false
+end
+
+class locked () =
+let r = Component.init true in
+object
+  method is_locked = r
+  method unlock = r#set false
+end
+
+class platform_boundaries () =
+let r = Component.init (0.0, 0.0) in
+object
+  method set_platform_boundaries left right = r#set (left, right)
+  method get_platform_left = fst (r#get)
+  method get_platform_right = snd (r#get)
 end
 
 (** Interfaces : ici on liste simplement les types des classes dont on hérite
@@ -86,12 +121,6 @@ class type gravitational =
     inherit velocity
   end
 
-class type killable =
-object
-  inherit Entity.t
-  inherit health
-end
-
 (** Entités :
     Ici, dans inherit, on appelle les constructeurs pour qu'ils initialisent
     leur partie de l'objet, d'où la présence de l'argument ()
@@ -107,13 +136,9 @@ class hero () =
     inherit velocity ()
     inherit grounded ()
     inherit health ()
-    val mutable damage_cooldown = 0.
-    method set_damage_cooldown (cooldown : float) : unit = damage_cooldown <- cooldown
-    method get_damage_cooldown : float = damage_cooldown
-    val mutable has_key = false
-    method has_key = has_key
-    method collect_key = has_key <- true
-    method use_key = has_key <- false
+    inherit max_health ()
+    inherit damage_cooldown ()
+    inherit has_key ()
   end
 
 class projectile () =
@@ -157,9 +182,7 @@ object
   inherit tagged ()
   inherit texture ()
   inherit resolver()
-  val mutable locked = true
-  method is_locked = locked
-  method unlock = locked <- false
+  inherit locked ()
 end
 
 class key () =
@@ -181,13 +204,9 @@ class threat () =
     inherit texture ()
     inherit resolver ()
     inherit velocity ()
-    val mutable platform_left = 0.0
-    val mutable platform_right = 0.0
-    method set_platform_boundaries left right =
-      platform_left <- left;
-      platform_right <- right
-    method get_platform_left = platform_left
-    method get_platform_right = platform_right
+    inherit health ()
+    inherit max_health ()
+    inherit platform_boundaries ()
   end
   
 class potion () =
