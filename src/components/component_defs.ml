@@ -199,4 +199,14 @@ class potion () =
     inherit texture ()
     inherit resolver()
   end
+
+class sun () =
+  object
+    inherit Entity.t ()
+    inherit position ()
+    inherit box ()
+    inherit tagged ()
+    inherit texture ()
+    inherit resolver()
+  end
   
