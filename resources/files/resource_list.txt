@@ -15,3 +15,6 @@ eternal_sun.png
 hope_fragment.png
 power_fragment.png
 wisdom_fragment.png
+you_win_screen.png
+start_screen.png
+logo.png

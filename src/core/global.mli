@@ -11,8 +11,15 @@ type t = {
   mutable restart : bool;
   mutable last_player_proj_dt : float;
   mutable pause : bool;
+  mutable won : bool;
+  mutable started : bool;
+  mutable dead : bool;
 }
 
 val get : unit -> t
 val set : t -> unit
 val toggle_pause : unit -> unit
+val start_game : unit -> unit
+val restart_game : unit -> unit
+val reset : unit -> unit
+val die : unit -> unit

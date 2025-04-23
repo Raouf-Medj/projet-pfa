@@ -93,26 +93,31 @@ let load scene_index save_hero_hl save_hero_mhl save_hero_attack save_hero_nb_fr
   
 let update_scene () =
   let global = Global.get() in
-  if not global.pause then (
-    if global.load_next_scene || global.restart then (
-      let save_hero_hl, save_hero_mhl, save_hero_attack, save_hero_nb_frags, save_hero_has_key = match global.hero with
-        | Some h -> h#health#get, h#max_health#get, h#attack#get, h#collected_frags#get, h#has_key#get
-        | None -> 1, 1, 1, 0, false
-      in
-      reset ();
-      if global.restart then (
-        global.restart <- false;
-        Global.set global;
-        load global.current_scene 1 1 1 0 false
+  if not global.won then (
+    if global.started then (
+      if not global.pause then (
+        if global.load_next_scene || global.restart then (
+          let save_hero_hl, save_hero_mhl, save_hero_attack, save_hero_nb_frags, save_hero_has_key = match global.hero with
+            | Some h -> h#health#get, h#max_health#get, h#attack#get, h#collected_frags#get, h#has_key#get
+            | None -> 1, 1, 1, 0, false
+          in
+          reset ();
+          if global.restart then (
+            global.restart <- false;
+            global.current_scene <- 0;
+            Global.set global;
+            load global.current_scene 1 1 1 0 false
+          )
+          else (
+            global.load_next_scene <- false;
+            global.current_scene <- global.current_scene + 1;
+            Global.set global;
+            load global.current_scene save_hero_hl save_hero_mhl save_hero_attack save_hero_nb_frags save_hero_has_key
+          );
+        )
       )
-      else (
-        global.load_next_scene <- false;
-        global.current_scene <- global.current_scene + 1;
-        Global.set global;
-        load global.current_scene save_hero_hl save_hero_mhl save_hero_attack save_hero_nb_frags save_hero_has_key
-      );
     )
   )
   else (
-    Pause_screen.draw global.ctx global.window
+    reset ()
   )
