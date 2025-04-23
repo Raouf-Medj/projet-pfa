@@ -56,6 +56,12 @@ class max_health () =
     method max_health = r
   end
 
+class attack (init : int) =
+  let r = Component.init init in
+  object
+    method attack = r
+  end
+
 class damage_cooldown () =
   let r = Component.init 0. in
   object
@@ -81,6 +87,12 @@ class blocked () =
   let r = Component.init false in
   object
     method is_blocked = r
+  end
+
+class collected_frags () =
+  let r = Component.init 0 in
+  object
+    method collected_frags = r
   end
 
 class platform_boundaries () =
@@ -143,11 +155,13 @@ class hero () =
     inherit grounded ()
     inherit health ()
     inherit max_health ()
+    inherit attack (1)
     inherit damage_cooldown ()
     inherit has_key ()
+    inherit collected_frags ()
   end
 
-class projectile () =
+class projectile (attack) =
 object
   inherit Entity.t ()
   inherit position ()
@@ -156,6 +170,7 @@ object
   inherit texture ()
   inherit resolver ()
   inherit velocity ()
+  inherit attack (attack)
 end
 
 class barrel () =
