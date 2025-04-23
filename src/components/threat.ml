@@ -38,7 +38,7 @@ let threat (x, y, width, height, typ) ?(platform_left = 0.0) ?(platform_right = 
     e#position#set Vector.{x = float x; y = float y};
     e#box#set Rect.{width; height};
     e#texture#set Texture.red;
-    e#velocity#set Vector.{x = 0.0; y = 0.0};
+    e#velocity#set Vector.{x = 1.0; y = 0.0};
     e#set_platform_boundaries platform_left platform_right;
     e#tag#set (Follower e);
     Draw_system.(register (e :> t));
@@ -69,8 +69,8 @@ let update_follower_position (follower : threat) =
   let platform_right = follower#get_platform_right in
 
   (* Vérifier si le héros est sur la même plateforme que le follower *)
-  if hero_pos.x >= platform_left && hero_pos.x <= platform_right then (
-    (* Le héros est sur la même plateforme, le follower commence à le pourchasser *)
+  if hero_pos.x >= platform_left +. float follower#box#get.width &&
+    hero_pos.x <= platform_right -. float follower#box#get.width then (    (* Le héros est sur la même plateforme, le follower commence à le pourchasser *)
     let direction = Vector.sub hero_pos follower_pos in
     let distance = Vector.norm direction in
     if distance > 0.0 then (
