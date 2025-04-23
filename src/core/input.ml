@@ -1,3 +1,5 @@
+open System_defs
+
 let key_table = Hashtbl.create 16
 let has_key s = Hashtbl.mem key_table s
 let set_key s= Hashtbl.replace key_table s ()
@@ -24,6 +26,8 @@ let () =
   register "D" (fun () -> Hero.(move_hero (get_hero()) Cst.right false));
   register "q" (fun () -> Hero.(move_hero (get_hero()) Cst.left false));
   register "Q" (fun () -> Hero.(move_hero (get_hero()) Cst.left false));
+  register "Escape" (fun () -> Pause_system.toggle_pause ());
+
   let gen_proj dir =
     let Global.{ last_player_proj_dt; textures; _ } = Global.get () in
     if Sys.time () -. last_player_proj_dt < Cst.player_proj_cd then ()
