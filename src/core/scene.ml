@@ -35,7 +35,7 @@ let find_platform_boundaries scene i j =
   (* Retourne les coordonnées en pixels *)
   (float_of_int !left *. 32., float_of_int (!right + 1) *. 32.)
 
-let load scene_index =
+let load scene_index save_hero_hl save_hero_mhl =
   let global = Global.get () in
   let scene = global.scenes.(scene_index) in
   for i = 0 to Array.length scene - 1 do
@@ -58,8 +58,10 @@ let load scene_index =
         let _ = Key.key (j * 32) (i * 32) in
         ()
       else if c = 'S' then
-        let hero = Some (Hero.hero (j * 32) (i * 32)) in
-        global.hero <- hero;
+        let h = Hero.hero (j * 32) (i * 32) in
+        h#health#set save_hero_hl;
+        h#max_health#set save_hero_mhl;
+        global.hero <- Some (h);
         Global.set global
       else if c = 'P' then
         let _ = Threat.threat (j * 32, i * 32 + 16, 32, 16, 1) () in
@@ -89,14 +91,21 @@ let load scene_index =
 let update_scene () =
   let global = Global.get() in
   if global.load_next_scene || global.restart then (
+    let save_hero_hl, save_hero_mhl = match global.hero with
+      | Some h -> h#health#get, h#max_health#get
+      | None -> 1, 1
+    in
     reset ();
     if global.restart then (
       global.restart <- false;
+      Global.set global;
+      load global.current_scene 1 1
     )
     else (
       global.load_next_scene <- false;
-      global.current_scene <- global.current_scene + 1
+      global.current_scene <- global.current_scene + 1;
+      Global.set global;
+      load global.current_scene save_hero_hl save_hero_mhl
     );
-    Global.set global;
-    load (global.current_scene)
+    
   )

@@ -12,7 +12,6 @@ let update dt =
   Draw_system.update dt;
   let hero = Hero.get_hero () in
   Hero.update_hero_cooldown hero;
-  (* Update darkie positions *)
   List.iter (fun darkie -> Threat.update_darkie_position darkie) !Threat.darkies;
   None
 

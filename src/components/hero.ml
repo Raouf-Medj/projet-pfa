@@ -53,7 +53,7 @@ let hero x y =
       Draw_system.(unregister (k :> t));
       Collision_system.(unregister (k :> t));
 
-    | Threat.Darkie s | Threat.Spike s->
+    | Threat.Darkie s | Threat.Spike s ->
       if e#damage_cooldown#get <= 0. then (
         if e#health#get > 1 then e#health#set (e#health#get - 1)
         else (
@@ -65,13 +65,28 @@ let hero x y =
       )
 
     | Potion.Potion s ->
-      if e#health#get < 3 then e#health#set (e#health#get + 1);
+      if e#health#get < e#max_health#get then e#health#set (e#health#get + 1);
       s#position#set Vector.{ x = -1000.; y = -1000. };
       Draw_system.(unregister (s :> t));
       Collision_system.(unregister (s :> t));
       let global = Global.get() in
       global.restart <- false;
       Global.set global
+
+    | Sun.Power s ->
+      failwith("todo");
+
+    | Sun.Hope s ->
+      e#max_health#set (e#max_health#get + 1);
+      e#health#set (e#health#get + 1);
+      Draw_system.(unregister (s :> t));
+      Collision_system.(unregister (s :> t));
+    
+    | Sun.Wisdom s ->
+      failwith("todo");
+
+    | Sun.Eternal s ->
+      failwith("todo"); (* Game Over. You Win ! *)
 
     | _ -> ()
   );
