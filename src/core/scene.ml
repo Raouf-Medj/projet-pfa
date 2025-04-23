@@ -109,7 +109,7 @@ let update_scene () =
         load global.current_scene save_hero_hl save_hero_mhl
       );
     )
-    else (
-      Pause_screen.draw global.ctx global.window
-    )
+  )
+  else (
+    Pause_screen.draw global.ctx global.window
   )
