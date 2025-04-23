@@ -1,13 +1,14 @@
+open Cst
 let draw ctx window =
   (* Dessiner un écran de pause *)
   Gfx.set_color ctx (Gfx.color 0 0 0 200);  (* Fond noir semi-transparent *)
   Gfx.fill_rect ctx (Gfx.get_surface window) 0 0 Cst.window_width Cst.window_height;
 
   (* Définir une couleur blanche pour le texte *)
-  let text_color = Gfx.color 255 255 255 255 in
+  let text_color =Cst.font_color in
 
   (* Afficher le texte "Paused" *)
-  let font = Gfx.load_font "Arial" "" 50 in
+  let font = Cst.font in
   let text = "Paused" in
   let text_width, text_height = Gfx.measure_text text font in
   let text_x = (Cst.window_width / 2) - (text_width / 2) in

@@ -19,7 +19,7 @@ let projectile (x, y, width, height, txt, direction) =
       Move_system.(unregister (e :> t));
       Gravitate_system.(unregister (e :> t));
 
-    | Threat.Darkie s ->
+    | Threat.Darkie s | Threat.Follower s->
       Draw_system.(unregister (e :> t));
       Collision_system.(unregister (e :> t));
       Move_system.(unregister (e :> t));
