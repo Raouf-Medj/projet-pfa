@@ -52,21 +52,44 @@ let render_status_bar ctx surface hl max_hl attack collected_fragments has_key =
   render_keys ctx surface has_key
 
 let update _dt el =
-  let Global.{window; ctx; hero; _} = Global.get () in
+  let Global.{window; ctx; hero; textures; won; restart; pause; started; dead; _} = Global.get () in
   let surface = Gfx.get_surface window in
   let ww, wh = Gfx.get_context_logical_size ctx in
-  (* Gfx.set_color ctx white;
-  Gfx.fill_rect ctx surface 0 0 ww wh; *)
-  let Global.{ textures; _ } = Global.get () in
-  Texture.draw ctx surface Vector.zero Rect.{ width=ww; height=wh } textures.(2);
-  Seq.iter (fun (e:t) ->
-    let pos = e#position#get in
-    let box = e#box#get in
-    let txt = e#texture#get in
-    Texture.draw ctx surface pos box txt
-  ) el;
-  let hlt, max_hlt, attack, nb_frags, has_key = (match hero with
-  | Some h -> h#health#get, h#max_health#get, h#attack#get, h#collected_frags#get, h#has_key#get
-  | None -> failwith "No hero") in
-  render_status_bar ctx surface hlt max_hlt attack nb_frags has_key;
-  Gfx.commit ctx
+  if started then (
+    if not won then (
+      if not dead then (
+        if not pause then (
+          Texture.draw ctx surface Vector.zero Rect.{ width=ww; height=wh } textures.(2);
+          Seq.iter (fun (e:t) ->
+            let pos = e#position#get in
+            let box = e#box#get in
+            let txt = e#texture#get in
+            Texture.draw ctx surface pos box txt
+          ) el;
+          let hlt, max_hlt, attack, nb_frags, has_key = (match hero with
+          | Some h -> h#health#get, h#max_health#get, h#attack#get, h#collected_frags#get, h#has_key#get
+          | None -> 1, 1, 1, 0, false) in
+          render_status_bar ctx surface hlt max_hlt attack nb_frags has_key;
+          Gfx.commit ctx
+        )
+        else (
+          Pause_screen.draw ctx window
+        )
+      )
+      else (
+        Game_over_screen.draw ctx window
+      )
+    )
+    else (
+      if restart then (
+        Global.reset ();
+        Start_screen.draw ctx window
+      )
+      else (
+        You_win_screen.draw ctx window
+      )
+    )
+  )
+  else (
+    Start_screen.draw ctx window
+  )

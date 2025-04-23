@@ -57,9 +57,11 @@ let hero x y =
       if e#damage_cooldown#get <= 0. then (
         if e#health#get > 1 then e#health#set (e#health#get - 1)
         else (
-          let global = Global.get() in
-          global.restart <- true;
-          Global.set global
+          Draw_system.(unregister (e :> t));
+          Collision_system.(unregister (e :> t));
+          Move_system.(unregister (e :> t));
+          Gravitate_system.(unregister (e :> t));
+          Global.die ()
         );
         e#damage_cooldown#set 60.;
       )
@@ -98,7 +100,8 @@ let hero x y =
       e#collected_frags#set 4;
       Draw_system.(unregister (s :> t));
       Collision_system.(unregister (s :> t));
-      (* Game Over. You Win ! *)
+      let global = Global.get() in global.won <- true;
+      Global.set global (* Game Over. You Win ! *)
 
     | _ -> ()
   );
@@ -112,7 +115,7 @@ let get_hero () =
   let Global.{hero; _ } = Global.get () in
   match hero with
   | Some h -> h
-  | None -> failwith "No hero"
+  | None -> failwith "hero.ml: No hero"
 
 let stop_hero () = 
   let Global.{hero; _ } = Global.get () in
