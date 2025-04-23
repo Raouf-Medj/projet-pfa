@@ -39,51 +39,57 @@ class velocity () =
   end
 
 class grounded () =
-let r = Component.init true in
-object
-  method is_grounded = r
-end
+  let r = Component.init true in
+  object
+    method is_grounded = r
+  end
 
 class health () =
-let r = Component.init 2 in
-object
-  method health = r
-end
+  let r = Component.init 2 in
+  object
+    method health = r
+  end
 
 class max_health () =
-let r = Component.init 2 in
-object
-  method max_health = r
-end
+  let r = Component.init 2 in
+  object
+    method max_health = r
+  end
 
 class damage_cooldown () =
-let r = Component.init 0. in
-object
-  method damage_cooldown = r
-end
+  let r = Component.init 0. in
+  object
+    method damage_cooldown = r
+  end
 
 class has_key () =
-let r = Component.init false in
-object
-  method has_key = r
-  method collect_key = r#set true
-  method use_key = r#set false
-end
+  let r = Component.init false in
+  object
+    method has_key = r
+    method collect_key = r#set true
+    method use_key = r#set false
+  end
 
 class locked () =
-let r = Component.init true in
-object
-  method is_locked = r
-  method unlock = r#set false
-end
+  let r = Component.init true in
+  object
+    method is_locked = r
+    method unlock = r#set false
+  end
+
+class blocked () =
+  let r = Component.init false in
+  object
+    method is_blocked = r
+  end
 
 class platform_boundaries () =
-let r = Component.init (0.0, 0.0) in
-object
-  method set_platform_boundaries left right = r#set (left, right)
-  method get_platform_left = fst (r#get)
-  method get_platform_right = snd (r#get)
-end
+  let r = Component.init (0.0, 0.0) in
+  object
+    method set_platform_boundaries left right = r#set (left, right)
+    method get_platform_left = fst (r#get)
+    method get_platform_right = snd (r#get)
+  end
 
 (** Interfaces : ici on liste simplement les types des classes dont on hérite
     si deux classes définissent les mêmes méthodes, celles de la classe écrite
@@ -162,6 +168,7 @@ object
   inherit resolver ()
   inherit velocity ()
   inherit grounded ()
+  inherit blocked ()
 end
 
 class barrier () =
