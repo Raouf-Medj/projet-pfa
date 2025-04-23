@@ -10,6 +10,7 @@ type t = {
   mutable load_next_scene : bool;
   mutable restart : bool;
   mutable last_player_proj_dt : float;
+  mutable pause : bool;
 }
 
 let state = ref None
@@ -20,3 +21,8 @@ let get () : t =
   | Some s -> s
 
 let set s = state := Some s
+
+let toggle_pause () =
+  let g = get () in
+  g.pause <- not g.pause;
+  set g

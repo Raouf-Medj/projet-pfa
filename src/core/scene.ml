@@ -90,22 +90,26 @@ let load scene_index save_hero_hl save_hero_mhl =
   
 let update_scene () =
   let global = Global.get() in
-  if global.load_next_scene || global.restart then (
-    let save_hero_hl, save_hero_mhl = match global.hero with
-      | Some h -> h#health#get, h#max_health#get
-      | None -> 1, 1
-    in
-    reset ();
-    if global.restart then (
-      global.restart <- false;
-      Global.set global;
-      load global.current_scene 1 1
+  if not global.pause then (
+    if global.load_next_scene || global.restart then (
+      let save_hero_hl, save_hero_mhl = match global.hero with
+        | Some h -> h#health#get, h#max_health#get
+        | None -> 1, 1
+      in
+      reset ();
+      if global.restart then (
+        global.restart <- false;
+        Global.set global;
+        load global.current_scene 1 1
+      )
+      else (
+        global.load_next_scene <- false;
+        global.current_scene <- global.current_scene + 1;
+        Global.set global;
+        load global.current_scene save_hero_hl save_hero_mhl
+      );
     )
     else (
-      global.load_next_scene <- false;
-      global.current_scene <- global.current_scene + 1;
-      Global.set global;
-      load global.current_scene save_hero_hl save_hero_mhl
-    );
-    
+      Pause_screen.draw global.ctx global.window
+    )
   )

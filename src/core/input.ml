@@ -10,8 +10,9 @@ let register key action = Hashtbl.replace action_table key action
 let handle_input () =
   let () =
     match Gfx.poll_event () with
-      KeyDown s -> (* Gfx.debug "%s\n" s; *) set_key s
-    | KeyUp s -> unset_key s
+    | KeyDown "Escape" -> Global.toggle_pause ()
+    | KeyDown s -> (* Gfx.debug "%s\n" s; *) if not ((Global.get ()).pause) then set_key s
+    | KeyUp s -> if not ((Global.get ()).pause) then unset_key s
     | Quit -> exit 0
     | _ -> ()
   in
@@ -26,7 +27,7 @@ let () =
   register "D" (fun () -> Hero.(move_hero (get_hero()) Cst.right false));
   register "q" (fun () -> Hero.(move_hero (get_hero()) Cst.left false));
   register "Q" (fun () -> Hero.(move_hero (get_hero()) Cst.left false));
-  register "Escape" (fun () -> Pause_system.toggle_pause ());
+  register "Escape" (fun () -> Global.toggle_pause ());
 
   let gen_proj dir =
     let Global.{ last_player_proj_dt; textures; _ } = Global.get () in
