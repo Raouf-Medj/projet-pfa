@@ -17,6 +17,8 @@ let update dt =
     Hero.update_hero_cooldown hero;
     (* Update darkie positions *)
     List.iter (fun darkie -> Threat.update_darkie_position darkie) !Threat.darkies;
+    List.iter (fun follower -> Threat.update_follower_position follower) !Threat.followers;
+
     None
   else 
     let Global.{ ctx; window; _ } = Global.get () in
