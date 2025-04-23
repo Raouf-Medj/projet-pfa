@@ -15,8 +15,10 @@ let update dt =
       let hero = Hero.get_hero () in
       Hero.update_hero_cooldown hero;
       List.iter (fun darkie -> Threat.update_darkie_position darkie) !Threat.darkies;
+      List.iter (fun follower -> Threat.update_follower_position follower) !Threat.followers;
     );
     None
+  
 
 (* lag is due to number of entities *)
 let run () =
