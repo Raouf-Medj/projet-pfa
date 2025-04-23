@@ -3,7 +3,9 @@ type t =
   | Color of Gfx.color
 
 let black = Color (Gfx.color 0 0 0 255)
+let dark = Color (Gfx.color 0 0 0 200)
 let white = Color (Gfx.color 255 255 255 255)
+let light = Color (Gfx.color 255 255 255 128)
 let red = Color (Gfx.color 255 0 0 255)
 let green = Color (Gfx.color 0 255 0 255)
 let blue = Color (Gfx.color 0 0 255 255)
@@ -14,7 +16,7 @@ let transparent = Color (Gfx.color 0 0 0 0)
 let draw ctx dst pos box src =
   let x = int_of_float pos.Vector.x in
   let y = int_of_float pos.Vector.y in
-  let Rect.{width; height} = box in
+  let Rect.{ width; height } = box in
   match src with
   | Image img -> Gfx.blit_scale ctx dst img x y width height
   | Color c ->

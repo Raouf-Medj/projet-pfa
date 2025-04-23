@@ -12,6 +12,6 @@ health.png
 darkie.png
 locked_gate.png
 eternal_sun.png
-power_fragment.png
 hope_fragment.png
+power_fragment.png
 wisdom_fragment.png

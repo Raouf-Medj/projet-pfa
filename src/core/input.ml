@@ -34,9 +34,10 @@ let () =
     if Sys.time () -. last_player_proj_dt < Cst.player_proj_cd then ()
     else (
       let hero = Hero.get_hero () in
-      let _ = Projectile.projectile (hero#position#get.x +. float hero#box#get.width /. 2. -. float Cst.projectile_size /. 2., 
-                                     hero#position#get.y +. float hero#box#get.height /. 2. -. float Cst.projectile_size /. 2., 
-                                     Cst.projectile_size, Cst.projectile_size, textures.(dir + 3), dir) 
+      let proj_size = Cst.projectile_size * hero#attack#get in
+      let _ = Projectile.projectile (hero#position#get.x +. float hero#box#get.width /. 2. -. float proj_size /. 2., 
+                                     hero#position#get.y +. float hero#box#get.height /. 2. -. float proj_size /. 2., 
+                                     proj_size, proj_size, textures.(dir + 3), dir, hero#attack#get) 
       in ()
     )
   in

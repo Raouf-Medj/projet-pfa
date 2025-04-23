@@ -73,20 +73,32 @@ let hero x y =
       global.restart <- false;
       Global.set global
 
-    | Sun.Power s ->
-      failwith("todo");
-
     | Sun.Hope s ->
       e#max_health#set (e#max_health#get + 1);
       e#health#set (e#health#get + 1);
+      e#collected_frags#set 1;
       Draw_system.(unregister (s :> t));
       Collision_system.(unregister (s :> t));
-    
+
+    | Sun.Power s ->
+      e#attack#set (e#attack#get + 1);
+      e#collected_frags#set 2;
+      Draw_system.(unregister (s :> t));
+      Collision_system.(unregister (s :> t));
+      
     | Sun.Wisdom s ->
-      failwith("todo");
+      e#max_health#set (e#max_health#get + 1);
+      e#health#set (e#health#get + 1);
+      e#attack#set (e#attack#get + 1);
+      e#collected_frags#set 3;
+      Draw_system.(unregister (s :> t));
+      Collision_system.(unregister (s :> t));
 
     | Sun.Eternal s ->
-      failwith("todo"); (* Game Over. You Win ! *)
+      e#collected_frags#set 4;
+      Draw_system.(unregister (s :> t));
+      Collision_system.(unregister (s :> t));
+      (* Game Over. You Win ! *)
 
     | _ -> ()
   );

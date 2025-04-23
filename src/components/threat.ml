@@ -25,10 +25,8 @@ let threat (x, y, width, height, typ) ?(platform_left = 0.0) ?(platform_right = 
     e#box#set Rect.{width; height};
     (* e#texture#set Texture.red; *)
     e#texture#set (let Global.{textures; _} = Global.get () in textures.(9));
-    e#velocity#set Vector.{x = 0.0; y = 0.0};
     e#tag#set (Spike e);
     Draw_system.(register (e :> t));
-    Move_system.(register (e :> t));
     Collision_system.(register (e :> t));
   );
 e
