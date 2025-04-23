@@ -12,7 +12,7 @@ let render_health ctx surface (hlt : int) (max_hlt : int) =
   let full_heart = "❤️" in
   let empty_heart = "💔" in
   let heart_string =
-    String.concat ""
+    String.concat "HL: "
       (List.init max_hlt (fun i -> if i < hlt then full_heart else empty_heart))
   in
   Texture.render_text ctx surface Vector.zero
