@@ -1,19 +1,31 @@
 open System_defs
 open Component_defs
 open Ecs
+open Pause_screen
 
 let update dt =
-  let () = Scene.update_scene () in
-  let () = Input.handle_input () in
-  Move_system.update dt;
-  let () = Hero.reset_hero_gravity () in
-  Collision_system.update dt;
-  Gravitate_system.update dt;
-  Draw_system.update dt;
-  let hero = Hero.get_hero () in
-  Hero.update_hero_cooldown hero;
-  List.iter (fun darkie -> Threat.update_darkie_position darkie) !Threat.darkies;
-  None
+  if (not (Pause_system.is_game_paused ())) then
+    (* Update the game state *)
+    let () = Scene.update_scene () in
+    let () = Input.handle_input () in
+    Move_system.update dt;
+    let () = Hero.reset_hero_gravity () in
+    Collision_system.update dt;
+    Gravitate_system.update dt;
+    Draw_system.update dt;
+    let hero = Hero.get_hero () in
+    Hero.update_hero_cooldown hero;
+    (* Update darkie positions *)
+    List.iter (fun darkie -> Threat.update_darkie_position darkie) !Threat.darkies;
+    None
+  else 
+    let Global.{ ctx; window; _ } = Global.get () in
+    Pause_screen.draw ctx window;
+    match Gfx.poll_event () with
+    | Gfx.KeyDown "Escape" ->  (* Basculer entre pause et reprise *)
+        Pause_system.toggle_pause ();
+        None
+    | _ -> None
 
 (* lag is due to number of entities *)
 let run () =
