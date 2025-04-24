@@ -6,21 +6,21 @@ open Pause_screen
 let update dt =
     let () = Scene.update_scene () in
     let () = Input.handle_input () in
-    if (not ((Global.get ()).pause)) then (
+    if (not ((Global.get ()).pause) && (Global.get ()).started && not (Global.get ()).dead) then (
       Move_system.update dt;
+      let Global.{hero; _ } = Global.get () in
+      (match hero with
+      | Some h ->
+        Hero.update_hero_cooldown h;
+        List.iter (fun darkie -> Threat.update_darkie_position darkie) !Threat.darkies;
+      | None -> ());
       let () = Hero.reset_hero_gravity () in
       Collision_system.update dt;
       Gravitate_system.update dt;
-      Draw_system.update dt;
-      let hero = Hero.get_hero () in
-      Hero.update_hero_cooldown hero;
-      List.iter (fun darkie -> Threat.update_darkie_position darkie) !Threat.darkies;
-      List.iter (fun follower -> Threat.update_follower_position follower) !Threat.followers;
     );
+    Draw_system.update dt;
     None
-  
 
-(* lag is due to number of entities *)
 let run () =
   let window_spec =
     Format.sprintf "game_canvas:%dx%d:"
@@ -60,7 +60,7 @@ let run () =
                   let load_next_scene = true in
                   let restart = false in
                   let last_player_proj_dt = 0. in
-                  let global = Global.{ window; ctx; hero = None; textures; scenes; current_scene; load_next_scene; restart; last_player_proj_dt; pause=false } in
+                  let global = Global.{ window; ctx; hero = None; textures; scenes; current_scene; load_next_scene; restart; last_player_proj_dt; pause=false; won=false; started=false; dead=false } in
                   Global.set global;
                   Gfx.main_loop update (fun () -> ())
               )
