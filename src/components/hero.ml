@@ -166,8 +166,9 @@ let move_hero hero v spc =
         hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x *. 20.; y = -. Cst.gravity });
       )
     ) else
-      hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x; y = 0. })
-  )
+      hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x; y = 0. });
+    Game_state.set_hero_position hero#position#get
+    )
 
 let update_hero_cooldown (hero : hero) =
   if hero#damage_cooldown#get > 0. then

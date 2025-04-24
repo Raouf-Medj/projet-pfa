@@ -14,7 +14,7 @@ let update dt =
       | Some h ->
         Hero.update_hero_cooldown h;
         List.iter (fun darkie -> Threat.update_darkie_position darkie) !Threat.darkies;
-        List.iter (fun darkie -> Boss.update_boss_position darkie) !Boss.boss;
+        List.iter (fun boss -> Boss.update_boss_position boss) !Boss.bosss;
 
       | None -> ());
       let () = Hero.reset_hero_gravity () in
