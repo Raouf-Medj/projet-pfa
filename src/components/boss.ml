@@ -1,8 +1,9 @@
 open Component_defs
 open System_defs
-open Threat
 
 type tag += Boss of boss
+
+let bosss = ref []
 
 let boss (x, y, width, height) ?(platform_left = 0.0) ?(platform_right = 0.0) () =
   let e = new boss() in
@@ -15,36 +16,54 @@ let boss (x, y, width, height) ?(platform_left = 0.0) ?(platform_right = 0.0) ()
   Draw_system.(register (e :> t));
   Move_system.(register (e :> t));
   Collision_system.(register (e :> t));
+  bosss := e :: !bosss;
   e
 
+
 let update_boss_position (b : boss) =
-  let pos = b#position#get in
+  let hero_pos = Game_state.get_hero_position () in
+  let b_pos = b#position#get in
   let vel = b#velocity#get in
-  let new_pos = Vector.add pos vel in
-  b#position#set new_pos;
-  (* Inverser la direction si le boss atteint les bords de la plateforme *)
-  let box = b#box#get in
   let platform_left = b#get_platform_left in
   let platform_right = b#get_platform_right in
-  if new_pos.x <= platform_left || new_pos.x +. float box.width >= platform_right then
-    b#velocity#set Vector.{x = -.vel.x; y = vel.y}
-
+  
+    (* Vérifier si le héros est sur la même plateforme que le b *)
+  if hero_pos.x >= platform_left +. float b#box#get.width &&
+    hero_pos.x <= platform_right -. float b#box#get.width then (    (* Le héros est sur la même plateforme, le b commence à le pourchasser *)
+    let direction = Vector.sub hero_pos b_pos in
+    let distance = Vector.norm direction in
+    if distance > 0.0 then (
+      let normalized_direction = Vector.normalize direction in
+      let speed = 1.5 in
+      let velocity = Vector.mult speed normalized_direction in
+      b#velocity#set Vector.{ x = velocity.x; y = 0.0 };
+      let new_pos = Vector.add b_pos b#velocity#get in
+      b#position#set Vector.{ x = new_pos.x; y = b_pos.y }
+    )
+  ) else (
+      (* Le héros n'est pas sur la même plateforme, le b agit comme un darkie *)
+    let new_pos = Vector.add b_pos vel in
+    b#position#set new_pos;
+  
+      (* Inverser la direction si le b atteint les bords de la plateforme *)
+    let box = b#box#get in
+    if new_pos.x <= platform_left || new_pos.x +. float box.width >= platform_right then (
+      b#velocity#set Vector.{ x = -.vel.x; y = vel.y }
+    )
+  )
 let update_boss_rapid_movement (b : boss) =
   b#velocity#set Vector.{x = 5.0; y = 0.0};
   (* Appeler update_boss_position pour gérer le mouvement rapide *)
   update_boss_position b;
   b#velocity#set Vector.{x = 0.0; y = 0.0} (* Arrêter le mouvement normal *)
 
-let shoot_projectiles_in_arc (b : boss) =
-  let pos = b#position#get in
-  let num_projectiles = 8 in
-  let angle_step = Float.pi /. float_of_int (num_projectiles - 1) in  (* Diviser 180° (π radians) en 8 parties *)
-  for i = 0 to num_projectiles - 1 do
-    let angle = Float.of_int i *. angle_step -. (Float.pi /. 2.0) in  (* Centrer l'arc autour de 0° *)
-    let direction = Vector.{x = cos angle; y = sin angle} in  (* Calculer la direction à partir de l'angle *)
-    let _ = Projectile.projectile (pos.x, pos.y, 16, 16, (Global.get ()).textures.(12), (int_of_float (direction.x *. 5.0)), (int_of_float (direction.y *. 5.0))) in
-    ()
-  done
+(*let shoot_projectiles_in_arc (b : boss) (hero : hero)=
+    (* Exemple : Le boss attaque le héros s'il est proche *)
+    let boss_pos = b#position#get in
+    let hero_pos = hero#position#get in
+    if Vector.norm boss_pos hero_pos < 50.0 then
+      boss_attack_hero b hero*)
+  
 let spawn_enemies (b : boss) =
   let pos = b#position#get in
   let spawn_offset = 32 in  (* Offset to spawn darkies near the boss *)
@@ -53,6 +72,8 @@ let spawn_enemies (b : boss) =
     (pos.x +. float spawn_offset, pos.y);  (* Spawn to the right of the boss *)
   ] in
   List.iter (fun (x, y) ->
-    let _ = Threat.darkie (int_of_float x, int_of_float y, 32, 32) () in
+    let _ = Threat.threat (int_of_float x, int_of_float y, 32, 32, 0) ~platform_left:(b#get_platform_left) ~platform_right:(b#get_platform_right) () in
     ()
   ) darkie_positions
+
+  

@@ -198,6 +198,18 @@ object
   inherit attack (attack)
 end
 
+class fireball (attack) =
+object
+  inherit Entity.t ()
+  inherit position ()
+  inherit box ()
+  inherit tagged ()
+  inherit texture ()
+  inherit resolver ()
+  inherit velocity ()
+  inherit attack (attack)
+end
+
 class barrel () =
 object
   inherit Entity.t ()
@@ -295,7 +307,10 @@ class boss () =
     inherit texture ()
     inherit resolver ()
     inherit velocity ()
+    inherit grounded ()
     inherit health ()
     inherit max_health ()
     inherit platform_boundaries ()
+    inherit attack (1)
+
   end

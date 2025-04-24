@@ -101,7 +101,7 @@ let load scene_index save_hero_hl save_hero_mhl save_hero_prt save_hero_mprt sav
         ()
       else if c = 'X' then 
         let platform_left, platform_right = find_platform_boundaries scene i j in
-        let _ = Boss.boss (j * 32, i * 32 + 16, 32, 16) ~platform_left ~platform_right () in 
+        let _ = Boss.boss (j * 32, i * 32 + 32, 32, 16) ~platform_left ~platform_right () in 
       ()
     done
   done

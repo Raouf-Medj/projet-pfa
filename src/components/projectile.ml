@@ -35,6 +35,14 @@ let projectile (x, y, width, height, txt, direction, attack) =
       Draw_system.(unregister (s :> t));
       Collision_system.(unregister (s :> t));
       Move_system.(unregister (e :> t));
+    | Boss.Boss s ->
+        Draw_system.(unregister (e :> t));
+        Collision_system.(unregister (e :> t));
+        Move_system.(unregister (e :> t));
+        Gravitate_system.(unregister (e :> t));
+        Draw_system.(unregister (s :> t));
+        Collision_system.(unregister (s :> t));
+        Move_system.(unregister (e :> t));
 
     | _ -> ()
   );

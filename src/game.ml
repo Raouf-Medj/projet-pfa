@@ -8,12 +8,14 @@ let update dt =
     let () = Input.handle_input () in
     if (not ((Global.get ()).pause) && (Global.get ()).started && not (Global.get ()).dead) then (
       Move_system.update dt;
-    Animation_system.update dt;
+      Animation_system.update dt;
       let Global.{hero; _ } = Global.get () in
       (match hero with
       | Some h ->
         Hero.update_hero_cooldown h;
         List.iter (fun darkie -> Threat.update_darkie_position darkie) !Threat.darkies;
+        List.iter (fun darkie -> Boss.update_boss_position darkie) !Boss.boss;
+
       | None -> ());
       let () = Hero.reset_hero_gravity () in
       Collision_system.update dt;
