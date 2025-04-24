@@ -35,7 +35,7 @@ let find_platform_boundaries scene i j =
   (* Retourne les coordonnées en pixels *)
   (float_of_int !left *. 32., float_of_int (!right + 1) *. 32.)
 
-let load scene_index save_hero_hl save_hero_mhl save_hero_attack save_hero_nb_frags save_hero_has_key =
+let load scene_index save_hero_hl save_hero_mhl save_hero_prt save_hero_mprt save_hero_attack save_hero_nb_frags save_hero_has_key =
   let global = Global.get () in
   let scene = global.scenes.(scene_index) in
   for i = 0 to Array.length scene - 1 do
@@ -61,6 +61,8 @@ let load scene_index save_hero_hl save_hero_mhl save_hero_attack save_hero_nb_fr
         let h = Hero.hero (j * 32) (i * 32) in
         h#health#set save_hero_hl;
         h#max_health#set save_hero_mhl;
+        h#max_protection#set save_hero_mprt;
+        h#protection#set save_hero_prt;
         h#attack#set save_hero_attack;
         h#collected_frags#set save_hero_nb_frags;
         h#has_key#set save_hero_has_key;
@@ -100,22 +102,22 @@ let update_scene () =
     if global.started then (
       if not global.pause then (
         if global.load_next_scene || global.restart then (
-          let save_hero_hl, save_hero_mhl, save_hero_attack, save_hero_nb_frags, save_hero_has_key = match global.hero with
-            | Some h -> h#health#get, h#max_health#get, h#attack#get, h#collected_frags#get, h#has_key#get
-            | None -> 1, 1, 1, 0, false
+          let save_hero_hl, save_hero_mhl, save_hero_prt, save_hero_mprt, save_hero_attack, save_hero_nb_frags, save_hero_has_key = match global.hero with
+            | Some h -> h#health#get, h#max_health#get, h#protection#get, h#max_protection#get, h#attack#get, h#collected_frags#get, h#has_key#get 
+            | None -> 1, 1, 1, 1, 1, 0, false
           in
           reset ();
           if global.restart then (
             global.restart <- false;
             global.current_scene <- 0;
             Global.set global;
-            load global.current_scene 1 1 1 0 false
+            load global.current_scene 1 1 1 1 1 0 false
           )
           else (
             global.load_next_scene <- false;
             global.current_scene <- global.current_scene + 1;
             Global.set global;
-            load global.current_scene save_hero_hl save_hero_mhl save_hero_attack save_hero_nb_frags save_hero_has_key
+            load global.current_scene save_hero_hl save_hero_mhl save_hero_prt save_hero_mprt save_hero_attack save_hero_nb_frags save_hero_has_key
           );
         )
       )

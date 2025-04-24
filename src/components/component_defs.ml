@@ -56,6 +56,18 @@ class max_health () =
     method max_health = r
   end
 
+class protection () =
+  let r = Component.init 1 in
+  object
+    method protection = r
+  end
+
+class max_protection () =
+  let r = Component.init 1 in
+  object
+    method max_protection = r
+  end
+
 class attack (init : int) =
   let r = Component.init init in
   object
@@ -139,7 +151,7 @@ class type gravitational =
     inherit position
     inherit velocity
   end
-class type animatable =
+class type animatableHero =
   object
     inherit Entity.t
     inherit position
@@ -147,6 +159,7 @@ class type animatable =
     inherit texture
     inherit tagged
     inherit velocity
+    inherit protection
   end
 
 (** Entités :
@@ -165,6 +178,8 @@ class hero () =
     inherit grounded ()
     inherit health ()
     inherit max_health ()
+    inherit protection ()
+    inherit max_protection ()
     inherit attack (1)
     inherit damage_cooldown ()
     inherit has_key ()
@@ -219,6 +234,16 @@ object
 end
 
 class key () =
+object
+  inherit Entity.t ()
+  inherit position ()
+  inherit box ()
+  inherit resolver()
+  inherit tagged ()
+  inherit texture ()
+end
+
+class shield () =
 object
   inherit Entity.t ()
   inherit position ()

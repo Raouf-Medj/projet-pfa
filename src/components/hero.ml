@@ -7,10 +7,8 @@ type tag += Hero of hero
 let hero x y =
   let e = new hero () in
   let Global.{textures; _} = Global.get () in
- (*e#add_animation "idle" [| textures.(0) |] 0.2;
-  e#add_animation "walk_right" [| textures.(21); textures.(22); textures.(23) |] 0.1;
-  e#add_animation "walk_left" [| textures.(24); textures.(25); textures.(26) |] 0.1;*)
-  e#texture#set textures.(0);
+  if (e#protection#get > 0 ) then e#texture#set textures.(0)
+  else e#texture#set textures.(30);
   e#position#set Vector.{x = float x; y = float y};
   e#box#set Rect.{width = Cst.hero_size; height = Cst.hero_size};
   e#damage_cooldown#set 2.;
@@ -58,7 +56,8 @@ let hero x y =
 
     | Threat.Darkie s | Threat.Spike s ->
       if e#damage_cooldown#get <= 0. then (
-        if e#health#get > 1 then e#health#set (e#health#get - 1)
+        if e#protection#get > 0 then e#protection#set (e#protection#get - 1)
+        else if e#health#get > 1 then e#health#set (e#health#get - 1)
         else (
           Draw_system.(unregister (e :> t));
           Collision_system.(unregister (e :> t));
