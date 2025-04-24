@@ -69,6 +69,9 @@ let load scene_index save_hero_hl save_hero_mhl save_hero_attack save_hero_nb_fr
       else if c = 'P' then
         let _ = Threat.threat (j * 32, i * 32 + 16, 32, 16, 1) () in
         ()
+      else if c = 'F' then
+        let _ = Threat.threat (j * 32, i * 32 + 16, 32, 16, 11) () in
+        ()
       else if c = 'p' then
         let platform_left, platform_right = find_platform_boundaries scene i j in
         let _ = Threat.threat (j * 32, i * 32 + 16, 32, 16, 0) ~platform_left ~platform_right () in
