@@ -19,3 +19,9 @@ you_win_screen.png
 start_screen.png
 logo.png
 flipped_spike.png
+heroLeft.png
+heroLeft1.png
+heroLeft2.png
+heroRight.png
+heroRight1.png
+heroRight2.png
