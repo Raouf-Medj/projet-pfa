@@ -7,12 +7,15 @@ type tag += Hero of hero
 let hero x y =
   let e = new hero () in
   let Global.{textures; _} = Global.get () in
+ (*e#add_animation "idle" [| textures.(0) |] 0.2;
+  e#add_animation "walk_right" [| textures.(21); textures.(22); textures.(23) |] 0.1;
+  e#add_animation "walk_left" [| textures.(24); textures.(25); textures.(26) |] 0.1;*)
   e#texture#set textures.(0);
   e#position#set Vector.{x = float x; y = float y};
   e#box#set Rect.{width = Cst.hero_size; height = Cst.hero_size};
-  e#velocity#set Vector.zero;
   e#damage_cooldown#set 2.;
   e#tag#set (Hero e);
+
   e#resolve#set (fun n t ->
     match t#tag#get with
     | Barrier.Barrier w ->
@@ -140,7 +143,10 @@ let move_hero hero v spc =
         if spc then hero#velocity#set Vector.{ x = 0.; y = -. Cst.hero_big_jump }
         else hero#velocity#set Vector.{ x = 0.; y = -. Cst.hero_small_jump }
       ) else (
-        hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x *. 20.; y = -. Cst.gravity })
+        hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x *. 20.; y = -. Cst.gravity });
+        if v.x > 0. then hero#texture#set (Array.get (Global.get()).textures 21)  (* Texture pour "walk_right" *)
+        else if v.x < 0. then hero#texture#set (Array.get (Global.get()).textures 24)  (* Texture pour "walk_left" *)
+        else hero#texture#set (Array.get (Global.get()).textures 0)  (* Texture pour "idle" *)
       )
     ) else
       hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x; y = 0. })
