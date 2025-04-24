@@ -31,3 +31,4 @@ heroLeftNoShield2.png
 heroRightnoShield.png
 heroRightnoShield1.png
 heroRightnoShield2.png
+shield.png
