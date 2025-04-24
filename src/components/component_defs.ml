@@ -115,7 +115,6 @@ class platform_boundaries () =
     method get_platform_right = snd (r#get)
   end
 
-
 (** Interfaces : ici on liste simplement les types des classes dont on hérite
     si deux classes définissent les mêmes méthodes, celles de la classe écrite
     après sont utilisées (héritage multiple).
@@ -286,3 +285,17 @@ class sun () =
     inherit resolver()
   end
   
+
+class boss () =
+  object
+    inherit Entity.t ()
+    inherit position ()
+    inherit box ()
+    inherit tagged ()
+    inherit texture ()
+    inherit resolver ()
+    inherit velocity ()
+    inherit health ()
+    inherit max_health ()
+    inherit platform_boundaries ()
+  end
