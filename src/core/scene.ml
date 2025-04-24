@@ -81,6 +81,9 @@ let load scene_index save_hero_hl save_hero_mhl save_hero_prt save_hero_mprt sav
       else if c = 'H' then
         let _ = Potion.potion (j * 32, i * 32 - 16, 24, 24) in
         ()
+      else if c = 'h' then
+        let _ = Shield.shield (j * 32, i * 32 - 16, 24, 24) in
+        ()
       else if c = '0' then (* Eternal sun *)
         let _ = Sun.sun (j * 32, i * 32 - 32*3, 128, 128, 0) in
         ()

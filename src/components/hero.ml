@@ -76,7 +76,15 @@ let hero x y =
       let global = Global.get() in
       global.restart <- false;
       Global.set global
-
+    | Shield.Shield s ->
+      if e#protection#get < e#max_protection#get then e#protection#set (e#protection#get + 1);
+      s#position#set Vector.{ x = -1000.; y = -1000. };
+      Draw_system.(unregister (s :> t));
+      Collision_system.(unregister (s :> t));
+      let global = Global.get() in
+      global.restart <- false;
+      Global.set global
+      
     | Sun.Hope s ->
       e#max_health#set (e#max_health#get + 1);
       e#health#set (e#health#get + 1);

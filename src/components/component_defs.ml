@@ -243,16 +243,6 @@ object
   inherit texture ()
 end
 
-class shield () =
-object
-  inherit Entity.t ()
-  inherit position ()
-  inherit box ()
-  inherit resolver()
-  inherit tagged ()
-  inherit texture ()
-end
-
 class threat () =
   object
     inherit Entity.t ()
@@ -277,6 +267,15 @@ class potion () =
     inherit resolver()
   end
 
+class shield () =
+  object
+    inherit Entity.t ()
+    inherit position ()
+    inherit box ()
+    inherit resolver()
+    inherit tagged ()
+    inherit texture ()
+  end
 class sun () =
   object
     inherit Entity.t ()
