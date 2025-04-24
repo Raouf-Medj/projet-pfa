@@ -18,3 +18,4 @@ wisdom_fragment.png
 you_win_screen.png
 start_screen.png
 logo.png
+flipped_spike.png

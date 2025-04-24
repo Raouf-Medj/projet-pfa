@@ -7,10 +7,9 @@ let darkies = ref []
 
 let threat (x, y, width, height, typ) ?(platform_left = 0.0) ?(platform_right = 0.0) () =
   let e = new threat () in
-  if typ = 0 then (
+  if typ = 0 then ( (* Darkie: moving enemy *)
     e#position#set Vector.{x = float x; y = float y};
     e#box#set Rect.{width; height};
-    (* e#texture#set Texture.red; *)
     e#texture#set (let Global.{textures; _} = Global.get () in textures.(11));
     e#velocity#set Vector.{x = 1.0; y = 0.0};
     e#set_platform_boundaries platform_left platform_right;
@@ -18,13 +17,20 @@ let threat (x, y, width, height, typ) ?(platform_left = 0.0) ?(platform_right = 
     Draw_system.(register (e :> t));
     Move_system.(register (e :> t));
     Collision_system.(register (e :> t));
-    darkies := e :: !darkies  (* Add darkie to the list *)
+    darkies := e :: !darkies
   )
-  else if typ = 1 then (
+  else if typ = 1 then ( (* Spike *)
     e#position#set Vector.{x = float x; y = float y};
     e#box#set Rect.{width; height};
-    (* e#texture#set Texture.red; *)
     e#texture#set (let Global.{textures; _} = Global.get () in textures.(9));
+    e#tag#set (Spike e);
+    Draw_system.(register (e :> t));
+    Collision_system.(register (e :> t));
+  )
+  else if typ = 11 then ( (* Upside-down spike *)
+    e#position#set Vector.{x = float x; y = float y -. 16.};
+    e#box#set Rect.{width; height};
+    e#texture#set (let Global.{textures; _} = Global.get () in textures.(20));
     e#tag#set (Spike e);
     Draw_system.(register (e :> t));
     Collision_system.(register (e :> t));
