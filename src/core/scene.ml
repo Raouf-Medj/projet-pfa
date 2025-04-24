@@ -38,12 +38,15 @@ let find_platform_boundaries scene i j =
 let load scene_index save_hero_hl save_hero_mhl save_hero_prt save_hero_mprt save_hero_attack save_hero_nb_frags save_hero_has_key =
   let global = Global.get () in
   let scene = global.scenes.(scene_index) in
+  let platforms = ref [] in  (* Liste pour stocker toutes les plateformes *)
   for i = 0 to Array.length scene - 1 do
     let row = scene.(i) in
     for j = 0 to String.length row - 1 do
       let c = row.[j] in
       if c = 'B' then
         let _ = Barrier.barrier (j * 32, i * 32, Texture.blue, 32, 32) in
+        let platform_left, platform_right = find_platform_boundaries scene i j in
+        platforms := (platform_left, platform_right) :: !platforms;
         ()
       else if c = 'R' then
         let _ = Barrel.barrel (j * 32) (i * 32) in
@@ -98,18 +101,6 @@ let load scene_index save_hero_hl save_hero_mhl save_hero_prt save_hero_mprt sav
         ()
       else if c = 'X' then 
         let platform_left, platform_right = find_platform_boundaries scene i j in
-        let platforms = ref [] in 
-        let pas = ref 1 in
-        let x = ref 1 in 
-        let y = ref 1 in 
-        while (!x * !y) <= 456 do
-          let platform_left, platform_right = find_platform_boundaries scene x y in
-          platforms := (platform_left, platform_right) :: !platforms
-          if ((!x>=19) && (!y >= 26)) then ()
-          else if (!x >= 26) then x := 1; y := !y+1
-          else 
-          
-        done;;
         let _ = Boss.boss (j * 32, i * 32 + 16, 32, 16, platforms) ~platform_left ~platform_right () in 
       ()
     done
