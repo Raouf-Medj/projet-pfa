@@ -1,39 +1,35 @@
-(*type animation = {
-  frames : Texture.t array;  (* Tableau des textures pour l'animation *)
-  frame_count : int;         (* Nombre total de frames *)
-  frame_duration : float;    (* Durée d'une frame en secondes *)
-  mutable current_frame : int; (* Frame actuelle *)
-  mutable elapsed_time : float; (* Temps écoulé depuis la dernière frame *)
-}
+open Ecs
+open Component_defs
 
-type t = {
-  mutable current_animation : string;  (* Nom de l'animation actuelle *)
-  animations : (string, animation) Hashtbl.t;  (* Table des animations *)
-}
+type t = animatable
 
-let create () = {
-  current_animation = "idle";
-  animations = Hashtbl.create 10;
-}
+let init _ = ()
 
-let add_animation anim_table name frames frame_duration =
-  let animation = {
-    frames;
-    frame_count = Array.length frames;
-    frame_duration;
-    current_frame = 0;
-    elapsed_time = 0.0;
-  } in
-  Hashtbl.add anim_table name animation
+let update _ entities =
+  Seq.iter (fun (entity : t) ->
+    let velocity = entity#velocity#get in
 
-let update_animation anim dt =
-  let current = Hashtbl.find anim.animations anim.current_animation in
-  current.elapsed_time <- current.elapsed_time +. dt;
-  if current.elapsed_time >= current.frame_duration then (
-    current.elapsed_time <- 0.0;
-    current.current_frame <- (current.current_frame + 1) mod current.frame_count
-  )
-
-let get_current_frame anim =
-  let current = Hashtbl.find anim.animations anim.current_animation in
-  current.frames.(current.current_frame)*)
+    (* Si l'entité est en mouvement, alterner les textures *)
+    let current_texture = entity#texture#get in
+    let textures = (Global.get ()).textures in
+      (*armour*)
+      (* Alterner les textures en fonction de la direction *)
+    if velocity.x > 0. then
+      if current_texture = textures.(24) then
+        entity#texture#set textures.(25)
+      else if current_texture = textures.(25) then
+        entity#texture#set textures.(26)
+      else
+        entity#texture#set textures.(24)
+    else if velocity.x < 0. then
+      if current_texture = textures.(21) then
+        entity#texture#set textures.(22)
+      else if current_texture = textures.(22) then
+        entity#texture#set textures.(23)
+      else
+        entity#texture#set textures.(21)
+    else(
+      if (current_texture = textures.(26) || current_texture = textures.(25)) then entity#texture#set textures.(24)
+      else if (current_texture = textures.(23) || current_texture = textures.(22)) then entity#texture#set textures.(21);
+    )    
+  ) entities

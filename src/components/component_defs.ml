@@ -139,54 +139,16 @@ class type gravitational =
     inherit position
     inherit velocity
   end
-
-(*
-type animation_record = {
-  frames: Texture.t array;
-  mutable frame_count: int;
-  mutable frame_duration: float;
-  mutable current_frame: int;
-  mutable elapsed_time: float;
-}
-
-class animation = 
+class type animatable =
   object
-    (* Table des animations *)
-    val animations = Hashtbl.create 10
-    val mutable current_animation = "idle"
+    inherit Entity.t
+    inherit position
+    inherit box
+    inherit texture
+    inherit tagged
+    inherit velocity
+  end
 
-    (* Ajouter une animation *)
-    method add_animation name frames frame_duration =
-      let animation = {
-        frames;
-        frame_count = Array.length frames;
-        frame_duration;
-        current_frame = 0;
-        elapsed_time = 0.0;
-      } in
-      Hashtbl.add animations name animation
-
-    (* Mettre à jour l'animation actuelle *)
-    method update_animation dt =
-      match Hashtbl.find_opt animations current_animation with
-      | Some anim ->
-          anim.elapsed_time <- anim.elapsed_time +. dt;
-          if anim.elapsed_time >= anim.frame_duration then (
-            anim.elapsed_time <- 0.0;
-            anim.current_frame <- (anim.current_frame + 1) mod anim.frame_count
-          )
-      | None -> ()
-
-    (* Obtenir la frame actuelle *)
-    method get_current_frame =
-      match Hashtbl.find_opt animations current_animation with
-      | Some anim -> anim.frames.(anim.current_frame)
-      | None -> Texture.Color (Gfx.color 0 0 0 255)  (* Retourne une texture par défaut si aucune animation *)
-
-    (* Changer l'animation actuelle *)
-    method set_animation name =
-      if Hashtbl.mem animations name then current_animation <- name
-  end*)
 (** Entités :
     Ici, dans inherit, on appelle les constructeurs pour qu'ils initialisent
     leur partie de l'objet, d'où la présence de l'argument ()

@@ -112,6 +112,7 @@ let hero x y =
   Collision_system.(register (e :> t));
   Move_system.(register (e :> t));
   Gravitate_system.(register (e :> t));
+  Animation_system.(register (e :> t)); 
   e
 
 let get_hero () = 
@@ -144,9 +145,6 @@ let move_hero hero v spc =
         else hero#velocity#set Vector.{ x = 0.; y = -. Cst.hero_small_jump }
       ) else (
         hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x *. 20.; y = -. Cst.gravity });
-        if v.x > 0. then hero#texture#set (Array.get (Global.get()).textures 21)  (* Texture pour "walk_right" *)
-        else if v.x < 0. then hero#texture#set (Array.get (Global.get()).textures 24)  (* Texture pour "walk_left" *)
-        else hero#texture#set (Array.get (Global.get()).textures 0)  (* Texture pour "idle" *)
       )
     ) else
       hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x; y = 0. })
