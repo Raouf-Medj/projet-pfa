@@ -25,3 +25,9 @@ heroLeft2.png
 heroRight.png
 heroRight1.png
 heroRight2.png
+heroLeftNoShield.png
+heroLeftNoShield1.png
+heroLeftNoShield2.png
+heroRightnoShield.png
+heroRightnoShield1.png
+heroRightnoShield2.png
