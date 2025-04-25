@@ -1,3 +1,4 @@
+open Cst
 let draw ctx window =
   Gfx.set_color ctx (Gfx.color 32 33 36 50);
   Gfx.fill_rect ctx (Gfx.get_surface window) 0 0 Cst.window_width Cst.window_height;

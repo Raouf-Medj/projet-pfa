@@ -54,7 +54,7 @@ let hero x y =
       Draw_system.(unregister (k :> t));
       Collision_system.(unregister (k :> t));
 
-    | Threat.Darkie s | Threat.Spike s ->
+    | Threat.Darkie s | Threat.Spike s | Threat.Follower s ->
       if e#damage_cooldown#get <= 0. then (
         if e#protection#get > 0 then e#protection#set (e#protection#get - 1)
         else if e#health#get > 1 then e#health#set (e#health#get - 1)
@@ -156,19 +156,20 @@ let reset_hero_gravity () =
     Global.set global
   )
 
-let move_hero hero v spc =
-  if Vector.norm hero#velocity#get < Cst.hero_max_velocity then (
-    if hero#is_grounded#get then (
-      if v.Vector.y < 0. then (
-        if spc then hero#velocity#set Vector.{ x = 0.; y = -. Cst.hero_big_jump }
-        else hero#velocity#set Vector.{ x = 0.; y = -. Cst.hero_small_jump }
-      ) else (
-        hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x *. 20.; y = -. Cst.gravity });
-      )
-    ) else
-      hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x; y = 0. });
+  let move_hero hero v spc =
+    if Vector.norm hero#velocity#get < Cst.hero_max_velocity then (
+      if hero#is_grounded#get then (
+        if v.Vector.y < 0. then (
+          if spc then hero#velocity#set Vector.{ x = 0.; y = -. Cst.hero_big_jump }
+          else hero#velocity#set Vector.{ x = 0.; y = -. Cst.hero_small_jump }
+        ) else (
+          hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x *. 20.; y = -. Cst.gravity })
+        )
+      ) else
+        hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x; y = 0. })
+    );
+    (* Mettre à jour la position du héros dans Game_state *)
     Game_state.set_hero_position hero#position#get
-    )
 
 let update_hero_cooldown (hero : hero) =
   if hero#damage_cooldown#get > 0. then
