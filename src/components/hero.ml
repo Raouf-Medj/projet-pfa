@@ -48,6 +48,9 @@ let hero x y =
         global.load_next_scene <- true;
         Global.set global
 
+    | Trampoline.Trampoline l ->
+      e#velocity#set Vector.{ x=0.; y=0.-.10. }
+
     | Key.Key k ->
       e#collect_key;
       k#position#set Vector.{ x = -1000.; y = -1000. };
@@ -104,12 +107,18 @@ let hero x y =
       e#collected_frags#set 1;
       Draw_system.(unregister (s :> t));
       Collision_system.(unregister (s :> t));
+      let global = Global.get() in
+      global.load_next_scene <- true;
+      Global.set global
 
     | Sun.Power s ->
       e#attack#set (e#attack#get + 1);
       e#collected_frags#set 2;
       Draw_system.(unregister (s :> t));
       Collision_system.(unregister (s :> t));
+      let global = Global.get() in
+      global.load_next_scene <- true;
+      Global.set global
       
     | Sun.Wisdom s ->
       e#max_health#set (e#max_health#get + 1);
@@ -118,6 +127,9 @@ let hero x y =
       e#collected_frags#set 3;
       Draw_system.(unregister (s :> t));
       Collision_system.(unregister (s :> t));
+      let global = Global.get() in
+      global.load_next_scene <- true;
+      Global.set global
 
     | Sun.Eternal s ->
       e#collected_frags#set 4;

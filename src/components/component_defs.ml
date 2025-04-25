@@ -202,43 +202,64 @@ class hero () =
   end
 
 class projectile (attack) =
-object
-  inherit Entity.t ()
-  inherit position ()
-  inherit box ()
-  inherit tagged ()
-  inherit texture ()
-  inherit resolver ()
-  inherit velocity ()
-  inherit attack (attack)
-end
+  object
+    inherit Entity.t ()
+    inherit position ()
+    inherit box ()
+    inherit tagged ()
+    inherit texture ()
+    inherit resolver ()
+    inherit velocity ()
+    inherit attack (attack)
+  end
 
 class fireball (attack) =
-object
-  inherit Entity.t ()
-  inherit position ()
-  inherit box ()
-  inherit tagged ()
-  inherit texture ()
-  inherit resolver ()
-  inherit velocity ()
-  inherit attack (attack)
-end
+  object
+    inherit Entity.t ()
+    inherit position ()
+    inherit box ()
+    inherit tagged ()
+    inherit texture ()
+    inherit resolver ()
+    inherit velocity ()
+    inherit attack (attack)
+  end
 
 class barrel () =
-object
-  inherit Entity.t ()
-  inherit position ()
-  inherit box ()
-  inherit tagged ()
-  inherit texture ()
-  inherit resolver ()
-  inherit velocity ()
-  inherit grounded ()
-  inherit blocked ()
-end
+  object
+    inherit Entity.t ()
+    inherit position ()
+    inherit box ()
+    inherit tagged ()
+    inherit texture ()
+    inherit resolver ()
+    inherit velocity ()
+    inherit grounded ()
+    inherit blocked ()
+  end
 
 class barrier () =
+    object
+      inherit Entity.t ()
+      inherit position ()
+      inherit box ()
+      inherit tagged ()
+      inherit texture ()
+      inherit resolver()
+    end
+
+class gate () =
+  object
+    inherit Entity.t ()
+    inherit position ()
+    inherit box ()
+    inherit tagged ()
+    inherit texture ()
+    inherit resolver()
+    inherit locked ()
+  end
+
+class trampoline () =
   object
     inherit Entity.t ()
     inherit position ()
@@ -248,26 +269,15 @@ class barrier () =
     inherit resolver()
   end
 
-class gate () =
-object
-  inherit Entity.t ()
-  inherit position ()
-  inherit box ()
-  inherit tagged ()
-  inherit texture ()
-  inherit resolver()
-  inherit locked ()
-end
-
 class key () =
-object
-  inherit Entity.t ()
-  inherit position ()
-  inherit box ()
-  inherit resolver()
-  inherit tagged ()
-  inherit texture ()
-end
+  object
+    inherit Entity.t ()
+    inherit position ()
+    inherit box ()
+    inherit resolver()
+    inherit tagged ()
+    inherit texture ()
+  end
 
 class threat () =
   object
@@ -302,6 +312,7 @@ class shield () =
     inherit tagged ()
     inherit texture ()
   end
+
 class sun () =
   object
     inherit Entity.t ()
@@ -328,7 +339,7 @@ class boss () =
     inherit is_in_rapid_movement ()
   end
 
-  class tower () =
+class tower () =
   object
     inherit Entity.t ()
     inherit position ()

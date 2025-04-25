@@ -63,6 +63,9 @@ let load scene_index save_hero_hl save_hero_mhl save_hero_prt save_hero_mprt sav
       else if c = 'g' then
         let _ = Gate.gate (j * 32) (i * 32) true in
         ()
+      else if c = 'L' then
+        let _ = Trampoline.trampoline (j * 32 + 24) (i * 32 + 24) in
+        ()
       else if c = 'K' then
         let _ = Key.key (j * 32) (i * 32) in
         ()
