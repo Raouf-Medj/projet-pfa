@@ -107,8 +107,8 @@ let load scene_index save_hero_hl save_hero_mhl save_hero_prt save_hero_mprt sav
         ()
       else if c = 'X' then 
         let platform_left, platform_right = find_platform_boundaries scene i j in
-        let _ = FireballTower.tower (j * 32, i * 32, Texture.green, 32, 32, true) in 
-        let _ = Boss.boss (j * 32, i * 32 , 8, 8) ~platform_left ~platform_right () in 
+        let _ = FireballTower.tower (j * 32, i * 32, Texture.green, 0, 0, true) in 
+        let _ = Boss.boss (j * 32, i * 32 , 32, 32) ~platform_left ~platform_right () in 
       ()
     done
   done
