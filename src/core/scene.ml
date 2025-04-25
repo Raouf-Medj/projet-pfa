@@ -45,9 +45,9 @@ let load scene_index save_hero_hl save_hero_mhl save_hero_prt save_hero_mprt sav
       if c = 'B' then
         let _ = Barrier.barrier (j * 32, i * 32, Texture.blue, 32, 32) in
         ()
-     (* else if c = 'T' then
+      else if c = 'T' then
           let _ = FireballTower.tower (j * 32, i * 32, Texture.green, 32, 32) in
-          ()*)
+          ()
       else if c = 'R' then
         let _ = Barrel.barrel (j * 32) (i * 32) in
         ()

@@ -1,4 +1,4 @@
-(*open Component_defs
+open Component_defs
 open System_defs
 
 type tag += Tower of tower
@@ -44,7 +44,7 @@ let shoot_fireballs (e : tower) (h : hero) =
       y = normalized_direction.x *. sin angle_offset +. normalized_direction.y *. cos angle_offset;
     } in
     let _ = Fireball.fireball
-      (tower_pos.x, tower_pos.y, 16, 16, (Global.get ()).textures.(12), (rotated_direction.x *. 5.0, rotated_direction.y *. 5.0), 1)
+      (tower_pos.x, tower_pos.y, 8, 8, Texture.red, (rotated_direction.x *. 5.0, rotated_direction.y *. 5.0), 1)
     in
     ()
   done
@@ -56,4 +56,4 @@ let update_fireball_towers () =
       List.iter (fun tower ->
         shoot_fireballs tower hero
       ) !towers
-  | None -> ()*)
+  | None -> ()

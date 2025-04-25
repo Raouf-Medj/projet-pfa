@@ -105,12 +105,9 @@ let spawn_enemies (b : boss) =
   
 let perform_special_attack (b : boss) =
   (* Générer un nombre aléatoire entre 1 et 10 *)
-  let chance = Random.int 10 + 1 in
-  if chance = 1 then (
-    (* Choisir une attaque spéciale aléatoire *)
-    let attack = Random.int 3 in
-    match attack with
-    | 0| 1| 2  -> update_boss_rapid_movement b (* Invoquer des ennemis *)
-    | 3| 4| 5 ->  spawn_enemies b  (* Mouvement rapide *)
-    | _ -> ()  (* Ne rien faire, cas par défaut *)
-  )
+  let atack = Random.int 10 + 1 in
+  match atack with
+  | 0| 1| 2  -> update_boss_rapid_movement b (* Invoquer des ennemis *)
+  | 3 ->  spawn_enemies b  (* Mouvement rapide *)
+  | _ -> ()  (* Ne rien faire, cas par défaut *)
+  
