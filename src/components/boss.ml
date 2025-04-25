@@ -90,6 +90,8 @@ let update_boss_rapid_movement (b : boss) =
       b#stop_rapid_movement ()  (* Désactiver l'état d'attaque rapide *)
   ))
 
+
+
 let spawn_enemies (b : boss) =
   let pos = b#position#get in
   let spawn_offset = 32 in  (* Offset to spawn darkies near the boss *)
@@ -101,13 +103,3 @@ let spawn_enemies (b : boss) =
     let _ = Threat.threat (int_of_float x, int_of_float y, 32, 32, 0) ~platform_left:(b#get_platform_left) ~platform_right:(b#get_platform_right) () in
     ()
   ) darkie_positions
-
-  
-let perform_special_attack (b : boss) =
-  (* Générer un nombre aléatoire entre 1 et 10 *)
-  let atack = Random.int 10 + 1 in
-  match atack with
-  | 0| 1| 2  -> update_boss_rapid_movement b (* Invoquer des ennemis *)
-  | 3| 4 ->  spawn_enemies b  (* Mouvement rapide *)
-  | _ -> ()  (* Ne rien faire, cas par défaut *)
-  

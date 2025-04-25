@@ -122,6 +122,13 @@ class is_in_rapid_movement () =
     method stop_rapid_movement () = is_in_rapid_movement <- false
     method is_in_rapid_movement () = is_in_rapid_movement
   end
+
+class is_on_boss () = 
+  object
+    val mutable is_on_boss = false
+    method set_is_on_boss () = is_on_boss <- true
+    method is_on_boss() = is_on_boss
+  end
 (** Interfaces : ici on liste simplement les types des classes dont on hérite
     si deux classes définissent les mêmes méthodes, celles de la classe écrite
     après sont utilisées (héritage multiple).
@@ -329,4 +336,6 @@ class boss () =
     inherit tagged ()
     inherit texture ()
     inherit resolver()
+    inherit velocity () 
+    inherit is_on_boss ()
   end

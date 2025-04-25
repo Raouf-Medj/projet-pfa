@@ -5,19 +5,45 @@ type tag += Tower of tower
 
 let towers = ref []
 
-let tower (x, y, txt, width, height) =
+let tower (x, y, txt, width, height, is_on_boss) =
+  if (not is_on_boss) then (
   let e = new tower () in
-  e#texture#set Texture.green;
-  e#position#set Vector.{x = float x; y = float y};
-  e#tag#set (Tower e);
-  e#box#set Rect.{width; height};
-  Draw_system.(register (e :> t));
-  Collision_system.(register (e :> t));
-  towers := e :: !towers;
-  e
-
+    e#texture#set Texture.green;
+    e#position#set Vector.{x = float x; y = float y};
+    e#velocity#set Vector.zero;
+    e#tag#set (Tower e);
+    e#box#set Rect.{width; height};
+    Draw_system.(register (e :> t));
+    Collision_system.(register (e :> t));
+    towers := e :: !towers;
+    e
+  ) else (
+    let e = new tower () in
+    e#texture#set Texture.green;
+    e#position#set Vector.{x = float x; y = float y};
+    e#set_is_on_boss ();
+    (match !Boss.bosss with
+    | Some b ->  e#velocity#set b#velocity#get;
+    | None -> ()); 
+    e#tag#set (Tower e);
+    e#box#set Rect.{width; height};
+    Draw_system.(register (e :> t));
+    Collision_system.(register (e :> t));
+    towers := e :: !towers;
+    e
+  )
+  
+let move_tower (e : tower) (b :boss) =
+  let b_pos = b#position#get in
+  let tower_pos = e#position#get in
+  if tower_pos.x <=  b_pos.x -. 0.2 || tower_pos.x >=  b_pos.x -. 0.2 then (
+    e#velocity#set b#velocity#get;
+    e#position#set b_pos;
+  ) else (
+    e#velocity#set Vector.zero;
+  )
  
-  let shoot_fireballs (e : tower) (h : hero) =
+let shoot_fireballs (e : tower) (h : hero) =
     let tower_pos = e#position#get in
     let hero_pos = h#position#get in
     

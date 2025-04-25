@@ -23,9 +23,10 @@ let update dt =
           let current_time = Sys.time () in
           if current_time -. !last_special_attack_time >= special_attack_interval then (
             last_special_attack_time := current_time;
-            Boss.perform_special_attack b;
-            List.iter (fun tower -> FireballTower.shoot_fireballs tower h) !FireballTower.towers;
+            BossAtack.perform_special_attack b h;
           )else if current_time -. !last_special_attack_time >= special_attack_interval/. 2. then  Boss.update_boss_position b;
+          List.iter (fun tower ->  if tower#is_on_boss() then FireballTower.move_tower tower b;) !FireballTower.towers;
+
         |None ->() (* Je mettrai le soleil ou une clé genre là*) )
       | None -> ());
       let () = Hero.reset_hero_gravity () in
