@@ -108,6 +108,6 @@ let perform_special_attack (b : boss) =
   let atack = Random.int 10 + 1 in
   match atack with
   | 0| 1| 2  -> update_boss_rapid_movement b (* Invoquer des ennemis *)
-  | 3 ->  spawn_enemies b  (* Mouvement rapide *)
+  | 3| 4 ->  spawn_enemies b  (* Mouvement rapide *)
   | _ -> ()  (* Ne rien faire, cas par défaut *)
   
