@@ -19,7 +19,7 @@ let projectile (x, y, width, height, txt, direction, attack) =
       Move_system.(unregister (e :> t));
       Gravitate_system.(unregister (e :> t));
 
-    | Threat.Spike s | Threat.Follower s->
+    | Threat.Spike s ->
       Draw_system.(unregister (e :> t));
       Collision_system.(unregister (e :> t));
       Move_system.(unregister (e :> t));
@@ -27,14 +27,15 @@ let projectile (x, y, width, height, txt, direction, attack) =
       Draw_system.(unregister (s :> t));
       Collision_system.(unregister (s :> t))
 
-    | Threat.Darkie s ->
+    | Threat.Darkie s | Threat.Follower s ->
       Draw_system.(unregister (e :> t));
       Collision_system.(unregister (e :> t));
       Move_system.(unregister (e :> t));
       Gravitate_system.(unregister (e :> t));
       Draw_system.(unregister (s :> t));
       Collision_system.(unregister (s :> t));
-      Move_system.(unregister (e :> t));
+      Move_system.(unregister (s :> t));
+
     | Boss.Boss s ->
         Boss.bosss := None;
         Draw_system.(unregister (e :> t));
