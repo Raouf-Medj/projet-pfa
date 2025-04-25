@@ -88,6 +88,7 @@ let hero x y =
       let global = Global.get() in
       global.restart <- false;
       Global.set global
+      
     | Shield.Shield s ->
       if e#protection#get < e#max_protection#get then e#protection#set (e#protection#get + 1);
       s#position#set Vector.{ x = -1000.; y = -1000. };

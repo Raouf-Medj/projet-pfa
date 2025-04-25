@@ -15,6 +15,7 @@ let threat (x, y, width, height, typ) ?(platform_left = 0.0) ?(platform_right = 
     e#texture#set (let Global.{textures; _} = Global.get () in textures.(11));
     e#velocity#set Vector.{x = 1.0; y = 0.0};
     e#set_platform_boundaries platform_left platform_right;
+    e#health#set 2;
     e#tag#set (Darkie e);
     Draw_system.(register (e :> t));
     Move_system.(register (e :> t));
@@ -37,18 +38,18 @@ let threat (x, y, width, height, typ) ?(platform_left = 0.0) ?(platform_right = 
     Draw_system.(register (e :> t));
     Collision_system.(register (e :> t));
   )
-  else if typ = 2 then (
-    (* Follower logic *)
+  else if typ = 2 then ( (* Follower *)
     e#position#set Vector.{x = float x; y = float y};
     e#box#set Rect.{width; height};
     e#texture#set Texture.red;
     e#velocity#set Vector.{x = 1.0; y = 0.0};
     e#set_platform_boundaries platform_left platform_right;
+    e#health#set 3;
     e#tag#set (Follower e);
     Draw_system.(register (e :> t));
     Move_system.(register (e :> t));
     Collision_system.(register (e :> t));
-    followers := e :: !followers  (* Add to the followers list *)
+    followers := e :: !followers
   );
 e
 
