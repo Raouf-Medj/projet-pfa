@@ -97,7 +97,7 @@ let spawn_enemies (b : boss) =
     (pos.x -. float spawn_offset, pos.y);  (* Spawn to the left of the boss *)
     (pos.x +. float spawn_offset, pos.y);  (* Spawn to the right of the boss *)
   ] in
-  List.iter (fun (x, y) ->
+  List.iter (fun (x, y) ->(*After the merge ndirou typ = 2 to spawn followers*)
     let _ = Threat.threat (int_of_float x, int_of_float y, 32, 32, 0) ~platform_left:(b#get_platform_left) ~platform_right:(b#get_platform_right) () in
     ()
   ) darkie_positions
