@@ -1,4 +1,4 @@
-open Component_defs
+(*open Component_defs
 open System_defs
 
 type tag += Fireball of fireball
@@ -30,3 +30,4 @@ let fireball (x, y, width, height, txt, direction, attack) =
   Collision_system.(register (e :> t));
   Move_system.(register (e :> t));
   e
+*)

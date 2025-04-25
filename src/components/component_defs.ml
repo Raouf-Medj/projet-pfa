@@ -115,6 +115,13 @@ class platform_boundaries () =
     method get_platform_right = snd (r#get)
   end
 
+class is_in_rapid_movement () = 
+  object
+    val mutable is_in_rapid_movement = false
+    method start_rapid_movement () = is_in_rapid_movement <- true
+    method stop_rapid_movement () = is_in_rapid_movement <- false
+    method is_in_rapid_movement () = is_in_rapid_movement
+  end
 (** Interfaces : ici on liste simplement les types des classes dont on hérite
     si deux classes définissent les mêmes méthodes, celles de la classe écrite
     après sont utilisées (héritage multiple).
@@ -307,10 +314,19 @@ class boss () =
     inherit texture ()
     inherit resolver ()
     inherit velocity ()
-    inherit grounded ()
     inherit health ()
     inherit max_health ()
     inherit platform_boundaries ()
     inherit attack (1)
+    inherit is_in_rapid_movement ()
+  end
 
+  class tower () =
+  object
+    inherit Entity.t ()
+    inherit position ()
+    inherit box ()
+    inherit tagged ()
+    inherit texture ()
+    inherit resolver()
   end
