@@ -4,6 +4,7 @@ open System_defs
 type tag += Boss of boss
 
 let bosss = ref None
+let killed = ref false
 
 let boss (x, y, width, height) ?(platform_left = 0.0) ?(platform_right = 0.0) () =
   let e = new boss() in
@@ -13,7 +14,7 @@ let boss (x, y, width, height) ?(platform_left = 0.0) ?(platform_right = 0.0) ()
   e#velocity#set Vector.{x = 1.0; y = 0.0};
   e#set_platform_boundaries platform_left platform_right;
   e#tag#set (Boss e);
-  e#health#set 10;
+  e#health#set 4;
   Draw_system.(register (e :> t));
   Move_system.(register (e :> t));
   Collision_system.(register (e :> t));
@@ -110,3 +111,9 @@ let spawn_enemies (b : boss) =
     let _ = Threat.threat (int_of_float x, int_of_float y + 64 + 16, 32, 16, 2) ~platform_left:(b#get_platform_left) ~platform_right:(b#get_platform_right) () in
     ()
   ) follower_positions
+
+
+let after_boss_death () = 
+  let pos = Game_state.get_boss_position () in
+  let _ = Sun.sun (int_of_float pos.x , int_of_float pos.y - 32*2, 128, 128, 0) in
+  killed := false;

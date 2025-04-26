@@ -19,5 +19,5 @@ let get_hero_position () =
 let set_boss_health h =
   boss_health := h
 
-let get_boss_position () =
+let get_boss_health () =
   !boss_health

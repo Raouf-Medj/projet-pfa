@@ -31,12 +31,14 @@ let projectile (x, y, width, height, txt, direction, attack) =
       Move_system.(unregister (e :> t));
       Gravitate_system.(unregister (e :> t));
     | Boss.Boss s ->
-        Boss.bosss := None;
         if s#health#get > attack then s#health#set (s#health#get - attack)
         else (
           Draw_system.(unregister (s :> t));
           Collision_system.(unregister (s :> t));
           Move_system.(unregister (s :> t));
+          Game_state.set_boss_position s#position#get;
+          Boss.bosss := None;
+          Boss.killed := true;
         );
         Draw_system.(unregister (e :> t));
         Collision_system.(unregister (e :> t));
