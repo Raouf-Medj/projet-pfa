@@ -12,12 +12,3 @@ let barrier (x, y, txt, width, height) =
   Draw_system.(register (e :> t));
   Collision_system.(register (e :> t));
   e
-
-let walls () = 
-  List.map barrier
-    Cst.[ 
-      (hwall1_x, hwall1_y, hwall_color, hwall_width, hwall_height);
-      (hwall2_x, hwall2_y, hwall_color, hwall_width, hwall_height);
-      (vwall1_x, vwall1_y, vwall_color, vwall_width, vwall_height);
-      (vwall2_x, vwall2_y, vwall_color, vwall_width, vwall_height);
-    ]
