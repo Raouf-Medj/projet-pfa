@@ -5,7 +5,6 @@ let logo_height = 242
 let logo_x = float (window_width / 2 - logo_width / 2)
 let logo_y = float (window_height / 2 - logo_height / 2 - 70)
 let up = Vector.{ x = 0.0; y = -1.0 }
-(* let down = Vector.{ x = 0.0; y = 1.0 } *)
 let right = Vector.{ x = 0.2; y = 0.0 }
 let left = Vector.{ x = -0.2; y = 0.0 }
 let up_projectile = Vector.{ x = 0.0; y = -15.0 }
@@ -22,32 +21,3 @@ let projectile_size = 10
 let player_proj_cd = 0.5
 let gravity = 0.3
 let hero_max_velocity = 10.
-
-
-
-let ball_size = 24
-let ball_color = Texture.red
-
-let ball_v_offset = window_height / 2 - ball_size / 2
-let ball_left_x = 128 + ball_size / 2
-let ball_right_x = window_width - ball_left_x - ball_size
-
-let wall_thickness = 32
-
-let hwall_width = window_width
-let hwall_height = wall_thickness
-let hwall1_x = 0
-let hwall1_y = 0
-let hwall2_x = 0
-let hwall2_y = window_height -  wall_thickness
-let hwall_color = Texture.green
-
-let vwall_width = wall_thickness
-let vwall_height = window_height - 2 * wall_thickness
-let vwall1_x = 0
-let vwall1_y = wall_thickness
-let vwall2_x = window_width - wall_thickness
-let vwall2_y = vwall1_y
-let vwall_color = Texture.green
-let font = Gfx.load_font "Arial" "" 50
-let font_color = Gfx.color 255 255 255 255
