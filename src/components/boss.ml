@@ -9,7 +9,7 @@ let boss (x, y, width, height) ?(platform_left = 0.0) ?(platform_right = 0.0) ()
   let e = new boss() in
   e#position#set Vector.{x = float x; y = float y};
   e#box#set Rect.{width; height};
-  e#texture#set Texture.red;
+  e#texture#set (let Global.{textures; _} = Global.get () in textures.(38));
   e#velocity#set Vector.{x = 1.0; y = 0.0};
   e#set_platform_boundaries platform_left platform_right;
   e#tag#set (Boss e);
@@ -100,6 +100,6 @@ let spawn_enemies (b : boss) =
     (pos.x +. float spawn_offset, pos.y);  (* Spawn to the right of the boss *)
   ] in
   List.iter (fun (x, y) ->
-    let _ = Threat.threat (int_of_float x, int_of_float y + 16, 32, 16, 2) ~platform_left:(b#get_platform_left) ~platform_right:(b#get_platform_right) () in
+    let _ = Threat.threat (int_of_float x, int_of_float y + 64 + 16, 32, 16, 2) ~platform_left:(b#get_platform_left) ~platform_right:(b#get_platform_right) () in
     ()
   ) follower_positions

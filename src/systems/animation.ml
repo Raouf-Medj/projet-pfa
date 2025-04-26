@@ -13,7 +13,6 @@ let update _ entities =
     (* Si l'entité est en mouvement, alterner les textures *)
     let current_texture = entity#texture#get in
     let textures = (Global.get ()).textures in
-      (*armour*)
       (* Alterner les textures en fonction de la direction *)
     if velocity.x > 0. then
       if current_texture = textures.(24 +6*(1-armour)) then

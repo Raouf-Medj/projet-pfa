@@ -36,3 +36,4 @@ trampoline.png
 follower.png
 fireball.png
 tower.png
+boss.png
