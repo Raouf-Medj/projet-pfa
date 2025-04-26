@@ -41,7 +41,7 @@ let threat (x, y, width, height, typ) ?(platform_left = 0.0) ?(platform_right = 
   else if typ = 2 then ( (* Follower *)
     e#position#set Vector.{x = float x; y = float y};
     e#box#set Rect.{width; height};
-    e#texture#set Texture.red;
+    e#texture#set (let Global.{textures; _} = Global.get () in textures.(35));
     e#velocity#set Vector.{x = 1.0; y = 0.0};
     e#set_platform_boundaries platform_left platform_right;
     e#health#set 3;

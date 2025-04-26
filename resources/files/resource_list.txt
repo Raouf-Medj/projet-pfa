@@ -33,3 +33,4 @@ heroRightnoShield1.png
 heroRightnoShield2.png
 shield.png
 trampoline.png
+follower.png
