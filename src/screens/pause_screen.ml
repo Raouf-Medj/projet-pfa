@@ -22,7 +22,7 @@ let draw ctx window =
   let instr_surface = Gfx.render_text ctx instructions font in
   Gfx.blit ctx (Gfx.get_surface window) instr_surface instr_x instr_y;
 
-  let quit_text = "Press [M] to mute" in
+  let quit_text = "Press [R] to restart the game" in
   let quit_width, quit_height = Gfx.measure_text quit_text font in
   let quit_x = (Cst.window_width / 2) - (quit_width / 2) in
   let quit_y = (Cst.window_height / 2) + 60 in

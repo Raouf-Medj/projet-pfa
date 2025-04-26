@@ -13,6 +13,7 @@ let handle_input () =
     match Gfx.poll_event () with
     | KeyDown "Enter" | KeyDown "return" -> if (not (Global.get ()).started) then Gfx.debug "enter\n"; set_key "Enter"
     | KeyDown "Escape" | KeyDown "escape" -> if ((Global.get ()).won || (Global.get ()).dead) then (Gfx.debug "esc_won/dead\n"; Global.restart_game ()) else if ((Global.get ()).started) then (Gfx.debug "esc_pause\n"; Global.toggle_pause ())
+    | KeyDown "R" | KeyDown "r" -> if (Global.get ()).pause then (Gfx.debug "R_restart\n"; Global.restart_game (); Global.toggle_pause ())
     | KeyDown s -> if not is_input_blocked then Gfx.debug "%s\n" s; set_key s
     | KeyUp s -> if not is_input_blocked then unset_key s
     | Quit -> exit 0
