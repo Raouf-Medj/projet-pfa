@@ -34,3 +34,4 @@ heroRightnoShield2.png
 shield.png
 trampoline.png
 follower.png
+fireball.png

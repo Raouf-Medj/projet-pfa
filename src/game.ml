@@ -5,6 +5,8 @@ open Pause_screen
 
 let last_special_attack_time = ref 0.0  (* Temps de la dernière attaque spéciale *)
 let special_attack_interval = 1.  (* Intervalle en secondes entre les attaques spéciales *)
+let last_shot_time = ref 0.0  (* Temps de la dernière attaque spéciale *)
+let shooting_interval = 1.5  (* Intervalle en secondes entre les attaques spéciales *)
 
 let update dt =
     let () = Scene.update_scene () in
@@ -19,6 +21,11 @@ let update dt =
         Hero.update_hero_cooldown h;
         List.iter (fun darkie -> Threat.update_darkie_position darkie) !Threat.darkies;
         List.iter (fun follower -> Threat.update_follower_position follower) !Threat.followers;
+        let current_time = Sys.time () in
+        if current_time -. !last_shot_time >= shooting_interval then (
+          last_shot_time := current_time;
+          List.iter (fun tower -> FireballTower.shoot_fireballs tower h) !FireballTower.towers;
+        );
         (match !Boss.bosss with 
         |Some b -> 
           let current_time = Sys.time () in

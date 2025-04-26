@@ -69,8 +69,9 @@ let shoot_fireballs (e : tower) (h : hero) =
         x = normalized_direction.x *. cos angle_offset -. normalized_direction.y *. sin angle_offset;
         y = normalized_direction.x *. sin angle_offset +. normalized_direction.y *. cos angle_offset;
       } in
+      let Global.{textures; _} = Global.get () in 
       let f = Fireball.fireball
-        (tower_pos.x, tower_pos.y, 8, 8, Texture.red, (rotated_direction.x *. 5.0, rotated_direction.y *. 5.0), 1)
+        (tower_pos.x, tower_pos.y, 8, 8, textures.(36) , (rotated_direction.x *. 5.0, rotated_direction.y *. 5.0), 1)
       in
       f#velocity#set Vector.{x = rotated_direction.x *. 5.0; y = rotated_direction.y *. 5.0};
     ) angles
