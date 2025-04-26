@@ -35,3 +35,4 @@ shield.png
 trampoline.png
 follower.png
 fireball.png
+tower.png

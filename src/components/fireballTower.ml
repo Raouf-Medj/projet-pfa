@@ -8,7 +8,7 @@ let towers = ref []
 let tower (x, y, txt, width, height, is_on_boss) =
   if (not is_on_boss) then (
   let e = new tower () in
-    e#texture#set Texture.green;
+    e#texture#set (let Global.{textures; _} = Global.get () in textures.(37));
     e#position#set Vector.{x = float x; y = float y};
     e#velocity#set Vector.zero;
     e#tag#set (Tower e);
@@ -71,7 +71,7 @@ let shoot_fireballs (e : tower) (h : hero) =
       } in
       let Global.{textures; _} = Global.get () in 
       let f = Fireball.fireball
-        (tower_pos.x, tower_pos.y, 8, 8, textures.(36) , (rotated_direction.x *. 5.0, rotated_direction.y *. 5.0), 1)
+        (tower_pos.x +. 8. , tower_pos.y +. 8., 8, 8, textures.(36) , (rotated_direction.x *. 5.0, rotated_direction.y *. 5.0), 1)
       in
       f#velocity#set Vector.{x = rotated_direction.x *. 5.0; y = rotated_direction.y *. 5.0};
     ) angles
