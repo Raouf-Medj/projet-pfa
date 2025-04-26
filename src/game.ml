@@ -24,7 +24,7 @@ let update dt =
         let current_time = Sys.time () in
         if current_time -. !last_shot_time >= shooting_interval then (
           last_shot_time := current_time;
-          List.iter (fun tower -> FireballTower.shoot_fireballs tower h) !FireballTower.towers;
+          List.iter (fun tower -> if (not (tower#is_on_boss())) then  FireballTower.shoot_fireballs tower h) !FireballTower.towers;
         );
         (match !Boss.bosss with 
         |Some b -> 

@@ -39,7 +39,7 @@ let boss (x, y, width, height) ?(platform_left = 0.0) ?(platform_right = 0.0) ()
     in
 
     (* Contraindre la position cible à rester sur la plateforme *)
-    let constrained_target_x = max platform_left (min target_x (platform_right -. float b#box#get.width)) in
+    let constrained_target_x = max (platform_left) (min target_x (platform_right -. float b#box#get.width)) in
 
     (* Si le boss est bloqué dans un coin, inverser la direction et augmenter temporairement la vitesse *)
     let (final_target_x, temporary_speed) =
