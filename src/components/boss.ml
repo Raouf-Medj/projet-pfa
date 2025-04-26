@@ -14,7 +14,7 @@ let boss (x, y, width, height) ?(platform_left = 0.0) ?(platform_right = 0.0) ()
   e#velocity#set Vector.{x = 1.0; y = 0.0};
   e#set_platform_boundaries platform_left platform_right;
   e#tag#set (Boss e);
-  e#health#set 4;
+  e#health#set 10;
   Draw_system.(register (e :> t));
   Move_system.(register (e :> t));
   Collision_system.(register (e :> t));
