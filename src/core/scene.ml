@@ -6,6 +6,7 @@ let reset () =
   let reset_level_entities () =
     (* Réinitialiser les listes globales ou les systèmes contenant les entités spécifiques au niveau *)
     Threat.darkies := [];
+    Threat.followers := [];
     Boss.bosss := None;
     FireballTower.towers := [];
   in reset_level_entities ();
