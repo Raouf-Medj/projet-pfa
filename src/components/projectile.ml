@@ -18,23 +18,30 @@ let projectile (x, y, width, height, txt, direction, attack) =
       Collision_system.(unregister (e :> t));
       Move_system.(unregister (e :> t));
       Gravitate_system.(unregister (e :> t));
-    | Threat.Darkie s | Threat.Follower s->
+
+    | Threat.Darkie s | Threat.Follower s ->
+      if s#health#get > attack then s#health#set (s#health#get - attack)
+      else (
+        Draw_system.(unregister (s :> t));
+        Collision_system.(unregister (s :> t));
+        Move_system.(unregister (s :> t));
+      );
       Draw_system.(unregister (e :> t));
       Collision_system.(unregister (e :> t));
       Move_system.(unregister (e :> t));
       Gravitate_system.(unregister (e :> t));
-      Draw_system.(unregister (s :> t));
-      Collision_system.(unregister (s :> t));
-      Move_system.(unregister (e :> t));
     | Boss.Boss s ->
         Boss.bosss := None;
+        if s#health#get > attack then s#health#set (s#health#get - attack)
+        else (
+          Draw_system.(unregister (s :> t));
+          Collision_system.(unregister (s :> t));
+          Move_system.(unregister (s :> t));
+        );
         Draw_system.(unregister (e :> t));
         Collision_system.(unregister (e :> t));
         Move_system.(unregister (e :> t));
         Gravitate_system.(unregister (e :> t));
-        Draw_system.(unregister (s :> t));
-        Collision_system.(unregister (s :> t));
-        Move_system.(unregister (e :> t));
 
     | _ -> ()
   );

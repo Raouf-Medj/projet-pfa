@@ -115,20 +115,21 @@ class platform_boundaries () =
     method get_platform_right = snd (r#get)
   end
 
-class is_in_rapid_movement () = 
+class is_in_rapid_movement () =
+  let r = Component.init false in
   object
-    val mutable is_in_rapid_movement = false
-    method start_rapid_movement () = is_in_rapid_movement <- true
-    method stop_rapid_movement () = is_in_rapid_movement <- false
-    method is_in_rapid_movement () = is_in_rapid_movement
+    method start_rapid_movement () = r#set true
+    method stop_rapid_movement () = r#set false
+    method is_in_rapid_movement () = r#get
   end
 
-class is_on_boss () = 
+class is_on_boss () =
+  let r = Component.init false in
   object
-    val mutable is_on_boss = false
-    method set_is_on_boss () = is_on_boss <- true
-    method is_on_boss() = is_on_boss
+    method set_is_on_boss () = r#set true
+    method is_on_boss() = r#get
   end
+
 (** Interfaces : ici on liste simplement les types des classes dont on hérite
     si deux classes définissent les mêmes méthodes, celles de la classe écrite
     après sont utilisées (héritage multiple).
@@ -179,6 +180,7 @@ class type animatableHero =
     Ici, dans inherit, on appelle les constructeurs pour qu'ils initialisent
     leur partie de l'objet, d'où la présence de l'argument ()
 *)
+
 class hero () =
   object
     inherit Entity.t ()
@@ -197,47 +199,67 @@ class hero () =
     inherit damage_cooldown ()
     inherit has_key ()
     inherit collected_frags ()
-    (*inherit animation*)
   end
 
 class projectile (attack) =
-object
-  inherit Entity.t ()
-  inherit position ()
-  inherit box ()
-  inherit tagged ()
-  inherit texture ()
-  inherit resolver ()
-  inherit velocity ()
-  inherit attack (attack)
-end
+  object
+    inherit Entity.t ()
+    inherit position ()
+    inherit box ()
+    inherit tagged ()
+    inherit texture ()
+    inherit resolver ()
+    inherit velocity ()
+    inherit attack (attack)
+  end
 
 class fireball (attack) =
-object
-  inherit Entity.t ()
-  inherit position ()
-  inherit box ()
-  inherit tagged ()
-  inherit texture ()
-  inherit resolver ()
-  inherit velocity ()
-  inherit attack (attack)
-end
+  object
+    inherit Entity.t ()
+    inherit position ()
+    inherit box ()
+    inherit tagged ()
+    inherit texture ()
+    inherit resolver ()
+    inherit velocity ()
+    inherit attack (attack)
+  end
 
 class barrel () =
-object
-  inherit Entity.t ()
-  inherit position ()
-  inherit box ()
-  inherit tagged ()
-  inherit texture ()
-  inherit resolver ()
-  inherit velocity ()
-  inherit grounded ()
-  inherit blocked ()
-end
+  object
+    inherit Entity.t ()
+    inherit position ()
+    inherit box ()
+    inherit tagged ()
+    inherit texture ()
+    inherit resolver ()
+    inherit velocity ()
+    inherit grounded ()
+    inherit blocked ()
+  end
 
 class barrier () =
+    object
+      inherit Entity.t ()
+      inherit position ()
+      inherit box ()
+      inherit tagged ()
+      inherit texture ()
+      inherit resolver()
+    end
+
+class gate () =
+  object
+    inherit Entity.t ()
+    inherit position ()
+    inherit box ()
+    inherit tagged ()
+    inherit texture ()
+    inherit resolver()
+    inherit locked ()
+  end
+
+class trampoline () =
   object
     inherit Entity.t ()
     inherit position ()
@@ -247,26 +269,15 @@ class barrier () =
     inherit resolver()
   end
 
-class gate () =
-object
-  inherit Entity.t ()
-  inherit position ()
-  inherit box ()
-  inherit tagged ()
-  inherit texture ()
-  inherit resolver()
-  inherit locked ()
-end
-
 class key () =
-object
-  inherit Entity.t ()
-  inherit position ()
-  inherit box ()
-  inherit resolver()
-  inherit tagged ()
-  inherit texture ()
-end
+  object
+    inherit Entity.t ()
+    inherit position ()
+    inherit box ()
+    inherit resolver()
+    inherit tagged ()
+    inherit texture ()
+  end
 
 class threat () =
   object
@@ -301,6 +312,7 @@ class shield () =
     inherit tagged ()
     inherit texture ()
   end
+
 class sun () =
   object
     inherit Entity.t ()
@@ -311,7 +323,6 @@ class sun () =
     inherit resolver()
   end
   
-
 class boss () =
   object
     inherit Entity.t ()
@@ -328,7 +339,7 @@ class boss () =
     inherit is_in_rapid_movement ()
   end
 
-  class tower () =
+class tower () =
   object
     inherit Entity.t ()
     inherit position ()
