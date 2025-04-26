@@ -3,8 +3,8 @@ open System_defs
 
 type tag += PlayerProjectile of projectile
 
-let projectile (x, y, width, height, txt, direction) =
-  let e = new projectile () in
+let projectile (x, y, width, height, txt, direction, attack) =
+  let e = new projectile (attack) in
   e#texture#set txt;
   e#position#set Vector.{x; y};
   e#tag#set (PlayerProjectile e);
@@ -18,14 +18,23 @@ let projectile (x, y, width, height, txt, direction) =
       Collision_system.(unregister (e :> t));
       Move_system.(unregister (e :> t));
       Gravitate_system.(unregister (e :> t));
-
     | Threat.Darkie s | Threat.Follower s->
       Draw_system.(unregister (e :> t));
       Collision_system.(unregister (e :> t));
       Move_system.(unregister (e :> t));
       Gravitate_system.(unregister (e :> t));
       Draw_system.(unregister (s :> t));
-      Collision_system.(unregister (s :> t))
+      Collision_system.(unregister (s :> t));
+      Move_system.(unregister (e :> t));
+    | Boss.Boss s ->
+        Boss.bosss := None;
+        Draw_system.(unregister (e :> t));
+        Collision_system.(unregister (e :> t));
+        Move_system.(unregister (e :> t));
+        Gravitate_system.(unregister (e :> t));
+        Draw_system.(unregister (s :> t));
+        Collision_system.(unregister (s :> t));
+        Move_system.(unregister (e :> t));
 
     | _ -> ()
   );

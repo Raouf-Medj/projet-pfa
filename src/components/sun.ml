@@ -13,19 +13,19 @@ let sun (x, y, width, height, typ) =
     Draw_system.(register (e :> t));
     Collision_system.(register (e :> t));
   )
-  else if typ = 1 then ( (* Power fragment *)
+  else if typ = 1 then ( (* Hope fragment *)
     e#position#set Vector.{x = float x; y = float y};
     e#box#set Rect.{width; height};
     e#texture#set (let Global.{textures; _} = Global.get () in textures.(14));
-    e#tag#set (Power e);
+    e#tag#set (Hope e);
     Draw_system.(register (e :> t));
     Collision_system.(register (e :> t));
   )
-  else if typ = 2 then ( (* Hope fragment *)
+  else if typ = 2 then ( (* Power fragment *)
     e#position#set Vector.{x = float x; y = float y};
     e#box#set Rect.{width; height};
     e#texture#set (let Global.{textures; _} = Global.get () in textures.(15));
-    e#tag#set (Hope e);
+    e#tag#set (Power e);
     Draw_system.(register (e :> t));
     Collision_system.(register (e :> t));
   )

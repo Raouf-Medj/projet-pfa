@@ -1,5 +1,9 @@
 let window_width = 800
 let window_height = 640
+let logo_width = 353
+let logo_height = 242
+let logo_x = float (window_width / 2 - logo_width / 2)
+let logo_y = float (window_height / 2 - logo_height / 2 - 70)
 let up = Vector.{ x = 0.0; y = -1.0 }
 (* let down = Vector.{ x = 0.0; y = 1.0 } *)
 let right = Vector.{ x = 0.2; y = 0.0 }

@@ -3,33 +3,40 @@ open Component_defs
 open Ecs
 open Pause_screen
 
+let last_special_attack_time = ref 0.0  (* Temps de la dernière attaque spéciale *)
+let special_attack_interval = 1.  (* Intervalle en secondes entre les attaques spéciales *)
+
 let update dt =
-  if (not (Pause_system.is_game_paused ())) then
-    (* Update the game state *)
     let () = Scene.update_scene () in
     let () = Input.handle_input () in
-    Move_system.update dt;
-    let () = Hero.reset_hero_gravity () in
-    Collision_system.update dt;
-    Gravitate_system.update dt;
+    if (not ((Global.get ()).pause) && (Global.get ()).started && not (Global.get ()).dead) then (
+      Move_system.update dt;
+      Animation_system.update dt;
+      (*FireballTower.update_fireball_towers ();*)
+      let Global.{hero; _ } = Global.get () in
+      (match hero with
+      | Some h ->
+        Hero.update_hero_cooldown h;
+        List.iter (fun darkie -> Threat.update_darkie_position darkie) !Threat.darkies;
+        List.iter (fun follower -> Threat.update_follower_position follower) !Threat.followers;
+        (match !Boss.bosss with 
+        |Some b -> 
+          let current_time = Sys.time () in
+          if current_time -. !last_special_attack_time >= special_attack_interval then (
+            last_special_attack_time := current_time;
+            BossAtack.perform_special_attack b h;
+          )else if current_time -. !last_special_attack_time >= special_attack_interval/. 2. then  Boss.update_boss_position b;
+          List.iter (fun tower ->  if tower#is_on_boss() then FireballTower.move_tower tower b;) !FireballTower.towers;
+
+        |None ->() (* Je mettrai le soleil ou une clé genre là*) )
+      | None -> ());
+      let () = Hero.reset_hero_gravity () in
+      Collision_system.update dt;
+      Gravitate_system.update dt; 
+    );
     Draw_system.update dt;
-    let hero = Hero.get_hero () in
-    Hero.update_hero_cooldown hero;
-    (* Update darkie positions *)
-    List.iter (fun darkie -> Threat.update_darkie_position darkie) !Threat.darkies;
-    List.iter (fun follower -> Threat.update_follower_position follower) !Threat.followers;
-
     None
-  else 
-    let Global.{ ctx; window; _ } = Global.get () in
-    Pause_screen.draw ctx window;
-    match Gfx.poll_event () with
-    | Gfx.KeyDown "Escape" ->  (* Basculer entre pause et reprise *)
-        Pause_system.toggle_pause ();
-        None
-    | _ -> None
 
-(* lag is due to number of entities *)
 let run () =
   let window_spec =
     Format.sprintf "game_canvas:%dx%d:"
@@ -69,7 +76,7 @@ let run () =
                   let load_next_scene = true in
                   let restart = false in
                   let last_player_proj_dt = 0. in
-                  let global = Global.{ window; ctx; hero = None; textures; scenes; current_scene; load_next_scene; restart; last_player_proj_dt } in
+                  let global = Global.{ window; ctx; hero = None; textures; scenes; current_scene; load_next_scene; restart; last_player_proj_dt; pause=false; won=false; started=false; dead=false } in
                   Global.set global;
                   Gfx.main_loop update (fun () -> ())
               )

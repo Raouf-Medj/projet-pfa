@@ -7,12 +7,13 @@ type tag += Hero of hero
 let hero x y =
   let e = new hero () in
   let Global.{textures; _} = Global.get () in
-  e#texture#set textures.(0);
+  if (e#protection#get > 0 ) then e#texture#set textures.(0)
+  else e#texture#set textures.(30);
   e#position#set Vector.{x = float x; y = float y};
   e#box#set Rect.{width = Cst.hero_size; height = Cst.hero_size};
-  e#velocity#set Vector.zero;
   e#damage_cooldown#set 2.;
   e#tag#set (Hero e);
+
   e#resolve#set (fun n t ->
     match t#tag#get with
     | Barrier.Barrier w ->
@@ -55,23 +56,74 @@ let hero x y =
 
     | Threat.Darkie s | Threat.Spike s |Threat.Follower s->
       if e#damage_cooldown#get <= 0. then (
-        if e#health#get > 1 then e#health#set (e#health#get - 1)
+        if e#protection#get > 0 then e#protection#set (e#protection#get - 1)
+        else if e#health#get > 1 then e#health#set (e#health#get - 1)
         else (
-          let global = Global.get() in
-          global.restart <- true;
-          Global.set global
+          Draw_system.(unregister (e :> t));
+          Collision_system.(unregister (e :> t));
+          Move_system.(unregister (e :> t));
+          Gravitate_system.(unregister (e :> t));
+          Global.die ()
         );
         e#damage_cooldown#set 60.;
       )
-
+    |Boss.Boss s ->
+      if e#damage_cooldown#get <= 0. then (
+        if e#protection#get > 0 then e#protection#set (e#protection#get - 1)
+        else if e#health#get > 1 then e#health#set (e#health#get - 1)
+        else (
+          Draw_system.(unregister (e :> t));
+          Collision_system.(unregister (e :> t));
+          Move_system.(unregister (e :> t));
+          Gravitate_system.(unregister (e :> t));
+          Global.die ()
+        );
+        e#damage_cooldown#set 60.;
+      )
     | Potion.Potion s ->
-      if e#health#get < 3 then e#health#set (e#health#get + 1);
+      if e#health#get < e#max_health#get then e#health#set (e#health#get + 1);
       s#position#set Vector.{ x = -1000.; y = -1000. };
       Draw_system.(unregister (s :> t));
       Collision_system.(unregister (s :> t));
       let global = Global.get() in
       global.restart <- false;
       Global.set global
+    | Shield.Shield s ->
+      if e#protection#get < e#max_protection#get then e#protection#set (e#protection#get + 1);
+      s#position#set Vector.{ x = -1000.; y = -1000. };
+      Draw_system.(unregister (s :> t));
+      Collision_system.(unregister (s :> t));
+      let global = Global.get() in
+      global.restart <- false;
+      Global.set global
+      
+    | Sun.Hope s ->
+      e#max_health#set (e#max_health#get + 1);
+      e#health#set (e#health#get + 1);
+      e#collected_frags#set 1;
+      Draw_system.(unregister (s :> t));
+      Collision_system.(unregister (s :> t));
+
+    | Sun.Power s ->
+      e#attack#set (e#attack#get + 1);
+      e#collected_frags#set 2;
+      Draw_system.(unregister (s :> t));
+      Collision_system.(unregister (s :> t));
+      
+    | Sun.Wisdom s ->
+      e#max_health#set (e#max_health#get + 1);
+      e#health#set (e#health#get + 1);
+      e#attack#set (e#attack#get + 1);
+      e#collected_frags#set 3;
+      Draw_system.(unregister (s :> t));
+      Collision_system.(unregister (s :> t));
+
+    | Sun.Eternal s ->
+      e#collected_frags#set 4;
+      Draw_system.(unregister (s :> t));
+      Collision_system.(unregister (s :> t));
+      let global = Global.get() in global.won <- true;
+      Global.set global (* Game Over. You Win ! *)
 
     | _ -> ()
   );
@@ -79,13 +131,14 @@ let hero x y =
   Collision_system.(register (e :> t));
   Move_system.(register (e :> t));
   Gravitate_system.(register (e :> t));
+  Animation_system.(register (e :> t)); 
   e
 
 let get_hero () = 
   let Global.{hero; _ } = Global.get () in
   match hero with
   | Some h -> h
-  | None -> failwith "No hero"
+  | None -> failwith "hero.ml: No hero"
 
 let stop_hero () = 
   let Global.{hero; _ } = Global.get () in
@@ -103,20 +156,19 @@ let reset_hero_gravity () =
     Global.set global
   )
 
-  let move_hero hero v spc =
-    if Vector.norm hero#velocity#get < Cst.hero_max_velocity then (
-      if hero#is_grounded#get then (
-        if v.Vector.y < 0. then (
-          if spc then hero#velocity#set Vector.{ x = 0.; y = -. Cst.hero_big_jump }
-          else hero#velocity#set Vector.{ x = 0.; y = -. Cst.hero_small_jump }
-        ) else (
-          hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x *. 20.; y = -. Cst.gravity })
-        )
-      ) else
-        hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x; y = 0. })
-    );
-    (* Mettre à jour la position du héros dans Game_state *)
+let move_hero hero v spc =
+  if Vector.norm hero#velocity#get < Cst.hero_max_velocity then (
+    if hero#is_grounded#get then (
+      if v.Vector.y < 0. then (
+        if spc then hero#velocity#set Vector.{ x = 0.; y = -. Cst.hero_big_jump }
+        else hero#velocity#set Vector.{ x = 0.; y = -. Cst.hero_small_jump }
+      ) else (
+        hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x *. 20.; y = -. Cst.gravity });
+      )
+    ) else
+      hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x; y = 0. });
     Game_state.set_hero_position hero#position#get
+    )
 
 let update_hero_cooldown (hero : hero) =
   if hero#damage_cooldown#get > 0. then

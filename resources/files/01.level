@@ -1,13 +1,14 @@
 BBBBBBBBBBBBBBBBBBBBBBBBB
 BBBBBBBBBBBBBBBBBBBBBBBBB
-BBBBBBBBBBB     BBBBBBBBB
-BBBBBBB             BBBBB
+BBBBBBBBBBB   FFBBBBBBBBB
+BBBBBBBFF           BBBBB
 BBBB                 BBBB
+BBB                  FBBB
 BBB                   BBB
-BBB                   BBB
 BB                     BB
 BB                     BB
 BB                     BB
+<<<<<<< HEAD
 BB                      B
 B                       G
 BS                      G
@@ -16,5 +17,15 @@ B                 F BBBBB
 BB            R  BBBBBBBB
 BBBB         BBBBBBBBBBBB
 BBBBBBB   BBBBBBBBBBBBBBB
+=======
+BB                     FB
+BF                      G
+BS   G                  G
+BBBBBB                BBB
+BP                  BBBBB
+BBPP         PPPPBBBBBBBB
+BBBB RR GR   BBBBBBBBBBBB
+BBBBBBBBBBBBBBBBBBBBBBBBB
+>>>>>>> Nik_ce_pc_jen_ai_marre
 BBBBBBBBBBBBBBBBBBBBBBBBB
 BBBBBBBBBBBBBBBBBBBBBBBBB

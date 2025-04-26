@@ -39,52 +39,96 @@ class velocity () =
   end
 
 class grounded () =
-let r = Component.init true in
-object
-  method is_grounded = r
-end
+  let r = Component.init true in
+  object
+    method is_grounded = r
+  end
 
 class health () =
-let r = Component.init 2 in
-object
-  method health = r
-end
+  let r = Component.init 2 in
+  object
+    method health = r
+  end
 
 class max_health () =
-let r = Component.init 2 in
-object
-  method max_health = r
-end
+  let r = Component.init 2 in
+  object
+    method max_health = r
+  end
+
+class protection () =
+  let r = Component.init 1 in
+  object
+    method protection = r
+  end
+
+class max_protection () =
+  let r = Component.init 1 in
+  object
+    method max_protection = r
+  end
+
+class attack (init : int) =
+  let r = Component.init init in
+  object
+    method attack = r
+  end
 
 class damage_cooldown () =
-let r = Component.init 0. in
-object
-  method damage_cooldown = r
-end
+  let r = Component.init 0. in
+  object
+    method damage_cooldown = r
+  end
 
 class has_key () =
-let r = Component.init false in
-object
-  method has_key = r
-  method collect_key = r#set true
-  method use_key = r#set false
-end
+  let r = Component.init false in
+  object
+    method has_key = r
+    method collect_key = r#set true
+    method use_key = r#set false
+  end
 
 class locked () =
-let r = Component.init true in
-object
-  method is_locked = r
-  method unlock = r#set false
-end
+  let r = Component.init true in
+  object
+    method is_locked = r
+    method unlock = r#set false
+  end
+
+class blocked () =
+  let r = Component.init false in
+  object
+    method is_blocked = r
+  end
+
+class collected_frags () =
+  let r = Component.init 0 in
+  object
+    method collected_frags = r
+  end
 
 class platform_boundaries () =
-let r = Component.init (0.0, 0.0) in
-object
-  method set_platform_boundaries left right = r#set (left, right)
-  method get_platform_left = fst (r#get)
-  method get_platform_right = snd (r#get)
-end
+  let r = Component.init (0.0, 0.0) in
+  object
+    method set_platform_boundaries left right = r#set (left, right)
+    method get_platform_left = fst (r#get)
+    method get_platform_right = snd (r#get)
+  end
 
+class is_in_rapid_movement () = 
+  object
+    val mutable is_in_rapid_movement = false
+    method start_rapid_movement () = is_in_rapid_movement <- true
+    method stop_rapid_movement () = is_in_rapid_movement <- false
+    method is_in_rapid_movement () = is_in_rapid_movement
+  end
+
+class is_on_boss () = 
+  object
+    val mutable is_on_boss = false
+    method set_is_on_boss () = is_on_boss <- true
+    method is_on_boss() = is_on_boss
+  end
 (** Interfaces : ici on liste simplement les types des classes dont on hérite
     si deux classes définissent les mêmes méthodes, celles de la classe écrite
     après sont utilisées (héritage multiple).
@@ -120,6 +164,16 @@ class type gravitational =
     inherit position
     inherit velocity
   end
+class type animatableHero =
+  object
+    inherit Entity.t
+    inherit position
+    inherit box
+    inherit texture
+    inherit tagged
+    inherit velocity
+    inherit protection
+  end
 
 (** Entités :
     Ici, dans inherit, on appelle les constructeurs pour qu'ils initialisent
@@ -137,11 +191,16 @@ class hero () =
     inherit grounded ()
     inherit health ()
     inherit max_health ()
+    inherit protection ()
+    inherit max_protection ()
+    inherit attack (1)
     inherit damage_cooldown ()
     inherit has_key ()
+    inherit collected_frags ()
+    (*inherit animation*)
   end
 
-class projectile () =
+class projectile (attack) =
 object
   inherit Entity.t ()
   inherit position ()
@@ -150,6 +209,19 @@ object
   inherit texture ()
   inherit resolver ()
   inherit velocity ()
+  inherit attack (attack)
+end
+
+class fireball (attack) =
+object
+  inherit Entity.t ()
+  inherit position ()
+  inherit box ()
+  inherit tagged ()
+  inherit texture ()
+  inherit resolver ()
+  inherit velocity ()
+  inherit attack (attack)
 end
 
 class barrel () =
@@ -162,6 +234,7 @@ object
   inherit resolver ()
   inherit velocity ()
   inherit grounded ()
+  inherit blocked ()
 end
 
 class barrier () =
@@ -219,6 +292,15 @@ class potion () =
     inherit resolver()
   end
 
+class shield () =
+  object
+    inherit Entity.t ()
+    inherit position ()
+    inherit box ()
+    inherit resolver()
+    inherit tagged ()
+    inherit texture ()
+  end
 class sun () =
   object
     inherit Entity.t ()
@@ -229,3 +311,31 @@ class sun () =
     inherit resolver()
   end
   
+
+class boss () =
+  object
+    inherit Entity.t ()
+    inherit position ()
+    inherit box ()
+    inherit tagged ()
+    inherit texture ()
+    inherit resolver ()
+    inherit velocity ()
+    inherit health ()
+    inherit max_health ()
+    inherit platform_boundaries ()
+    inherit attack (1)
+    inherit is_in_rapid_movement ()
+  end
+
+  class tower () =
+  object
+    inherit Entity.t ()
+    inherit position ()
+    inherit box ()
+    inherit tagged ()
+    inherit texture ()
+    inherit resolver()
+    inherit velocity () 
+    inherit is_on_boss ()
+  end

@@ -9,9 +9,12 @@ let register key action = Hashtbl.replace action_table key action
 
 let handle_input () =
   let () =
+    let is_input_blocked = not (Global.get ()).started || (Global.get ()).pause in
     match Gfx.poll_event () with
-      KeyDown s -> (* Gfx.debug "%s\n" s; *) set_key s
-    | KeyUp s -> unset_key s
+    | KeyDown "Enter" | KeyDown "return" -> if (not (Global.get ()).started) then Gfx.debug "enter\n"; set_key "Enter"
+    | KeyDown "Escape" | KeyDown "escape" -> if ((Global.get ()).won || (Global.get ()).dead) then (Gfx.debug "esc_won/dead\n"; Global.restart_game ()) else if ((Global.get ()).started) then (Gfx.debug "esc_pause\n"; Global.toggle_pause ())
+    | KeyDown s -> if not is_input_blocked then Gfx.debug "%s\n" s; set_key s
+    | KeyUp s -> if not is_input_blocked then unset_key s
     | Quit -> exit 0
     | _ -> ()
   in
@@ -26,16 +29,18 @@ let () =
   register "D" (fun () -> Hero.(move_hero (get_hero()) Cst.right false));
   register "q" (fun () -> Hero.(move_hero (get_hero()) Cst.left false));
   register "Q" (fun () -> Hero.(move_hero (get_hero()) Cst.left false));
-  register "Escape" (fun () -> Pause_system.toggle_pause ());
+  register "Escape" (fun () -> Global.toggle_pause ());
+  register "Enter" (fun () -> Global.start_game ());
 
   let gen_proj dir =
     let Global.{ last_player_proj_dt; textures; _ } = Global.get () in
     if Sys.time () -. last_player_proj_dt < Cst.player_proj_cd then ()
     else (
       let hero = Hero.get_hero () in
-      let _ = Projectile.projectile (hero#position#get.x +. float hero#box#get.width /. 2. -. float Cst.projectile_size /. 2., 
-                                     hero#position#get.y +. float hero#box#get.height /. 2. -. float Cst.projectile_size /. 2., 
-                                     Cst.projectile_size, Cst.projectile_size, textures.(dir + 3), dir) 
+      let proj_size = Cst.projectile_size * hero#attack#get in
+      let _ = Projectile.projectile (hero#position#get.x +. float hero#box#get.width /. 2. -. float proj_size /. 2., 
+                                     hero#position#get.y +. float hero#box#get.height /. 2. -. float proj_size /. 2., 
+                                     proj_size, proj_size, textures.(dir + 3), dir, hero#attack#get) 
       in ()
     )
   in
