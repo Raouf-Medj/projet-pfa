@@ -30,6 +30,7 @@ let projectile (x, y, width, height, txt, direction, attack) =
       Collision_system.(unregister (e :> t));
       Move_system.(unregister (e :> t));
       Gravitate_system.(unregister (e :> t));
+      
     | Boss.Boss s ->
         if s#health#get > attack then s#health#set (s#health#get - attack)
         else (
@@ -44,6 +45,23 @@ let projectile (x, y, width, height, txt, direction, attack) =
         Collision_system.(unregister (e :> t));
         Move_system.(unregister (e :> t));
         Gravitate_system.(unregister (e :> t));
+
+    | FireballTower.Tower t ->
+      if t#health#get > attack then t#health#set (t#health#get - attack)
+      else (
+        Draw_system.(unregister (t :> t));
+        Collision_system.(unregister (t :> t));
+        Move_system.(unregister (t :> t));
+      );
+      Draw_system.(unregister (e :> t));
+      Collision_system.(unregister (e :> t));
+      Move_system.(unregister (e :> t));
+      Gravitate_system.(unregister (e :> t));
+
+    | Fireball.Fireball f ->
+      Draw_system.(unregister (f :> t));
+      Collision_system.(unregister (f :> t));
+      Move_system.(unregister (f :> t));
 
     | _ -> ()
   );

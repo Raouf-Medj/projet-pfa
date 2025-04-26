@@ -13,6 +13,8 @@ let tower (x, y, txt, width, height, is_on_boss) =
     e#velocity#set Vector.zero;
     e#tag#set (Tower e);
     e#box#set Rect.{width; height};
+    e#health#set 4;
+    e#max_health#set 4;
     Draw_system.(register (e :> t));
     Collision_system.(register (e :> t));
     towers := e :: !towers;

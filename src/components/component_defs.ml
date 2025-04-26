@@ -349,4 +349,6 @@ class tower () =
     inherit resolver()
     inherit velocity () 
     inherit is_on_boss ()
+    inherit health ()
+    inherit max_health ()
   end
