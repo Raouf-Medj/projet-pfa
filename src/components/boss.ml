@@ -95,11 +95,11 @@ let update_boss_rapid_movement (b : boss) =
 let spawn_enemies (b : boss) =
   let pos = b#position#get in
   let spawn_offset = 32 in  (* Offset to spawn darkies near the boss *)
-  let darkie_positions = [
+  let follower_positions = [
     (pos.x -. float spawn_offset, pos.y);  (* Spawn to the left of the boss *)
     (pos.x +. float spawn_offset, pos.y);  (* Spawn to the right of the boss *)
   ] in
-  List.iter (fun (x, y) ->(*After the merge ndirou typ = 2 to spawn followers*)
-    let _ = Threat.threat (int_of_float x, int_of_float y + 16, 32, 16, 0) ~platform_left:(b#get_platform_left) ~platform_right:(b#get_platform_right) () in
+  List.iter (fun (x, y) ->
+    let _ = Threat.threat (int_of_float x, int_of_float y + 16, 32, 16, 2) ~platform_left:(b#get_platform_left) ~platform_right:(b#get_platform_right) () in
     ()
-  ) darkie_positions
+  ) follower_positions
