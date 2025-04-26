@@ -29,7 +29,11 @@ let update _ entities =
       else
         entity#texture#set textures.(21 +6*(1-armour))
     else(
-      if (current_texture = textures.(26 +6*(1-armour)) || current_texture = textures.(25 +6*(1-armour))) then entity#texture#set textures.(24 +6*(1-armour)) 
-      else if (current_texture = textures.(23 +6*(1-armour)) || current_texture = textures.(22 +6*(1-armour))) then entity#texture#set textures.(21 +6*(1-armour));
+      if (current_texture = textures.(26 +6*(1-armour)) 
+          || current_texture = textures.(25 +6*(1-armour)))
+          then entity#texture#set textures.(24 +6*(1-armour)) 
+      else if (current_texture = textures.(23 +6*(1-armour)) 
+              || current_texture = textures.(22 +6*(1-armour))) 
+              then entity#texture#set textures.(21 +6*(1-armour));
     )    
   ) entities

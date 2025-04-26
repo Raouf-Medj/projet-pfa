@@ -9,7 +9,7 @@ let boss (x, y, width, height) ?(platform_left = 0.0) ?(platform_right = 0.0) ()
   let e = new boss() in
   e#position#set Vector.{x = float x; y = float y};
   e#box#set Rect.{width; height};
-  e#texture#set (let Global.{textures; _} = Global.get () in textures.(38));
+  e#texture#set (let Global.{textures; _} = Global.get () in textures.(39));
   e#velocity#set Vector.{x = 1.0; y = 0.0};
   e#set_platform_boundaries platform_left platform_right;
   e#tag#set (Boss e);
@@ -22,11 +22,18 @@ let boss (x, y, width, height) ?(platform_left = 0.0) ?(platform_right = 0.0) ()
 
 
  let update_boss_position (b : boss) =
+  (* Vérifier si le boss est en mouvement rapide et s'il est déjà à la position cible *)
   if b#is_in_rapid_movement ()  then (if b#position#get =  Game_state.get_hero_position () then (b#stop_rapid_movement () )) 
       (* Ne rien faire si le boss est en attaque rapide *)
   else (
     let hero_pos = Game_state.get_hero_position () in
     let b_pos = b#position#get in
+    
+    if(hero_pos.x < b_pos.x) then
+      b#texture#set (let Global.{textures; _} = Global.get () in textures.(39))
+    else b#texture#set (let Global.{textures; _} = Global.get () in textures.(38));
+    (* Récupérer la position du boss et les limites de la plateforme *) 
+
     let platform_left = b#get_platform_left in
     let platform_right = b#get_platform_right in
     let tile_size = 32.0 in  (* Taille d'une case en pixels *)

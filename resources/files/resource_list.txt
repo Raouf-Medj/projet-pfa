@@ -37,3 +37,4 @@ follower.png
 fireball.png
 tower.png
 boss.png
+bossLeft.png
