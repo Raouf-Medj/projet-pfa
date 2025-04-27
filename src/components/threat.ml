@@ -45,6 +45,7 @@ let threat (x, y, width, height, typ) ?(platform_left = 0.0) ?(platform_right = 
     e#velocity#set Vector.{x = 1.0; y = 0.0};
     e#set_platform_boundaries platform_left platform_right;
     e#health#set 3;
+    e#set_health_bar h;
     e#tag#set (Follower e);
     Draw_system.(register (e :> t));
     Move_system.(register (e :> t));
