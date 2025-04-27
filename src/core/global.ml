@@ -31,11 +31,13 @@ let get () : t =
 
 let set s = state := Some s
 
-let highScore () =
+let is_high_score s =
+    s > !highscore
+let set_high_score s =
   let g = get () in
-    if   g.dead || g.won || g.restart then
-      Highscore.add_high_score !highscore
-  
+  highscore := s;
+  g.score <- s;
+  set g
 
 let toggle_pause () =
   let g = get () in
@@ -52,14 +54,12 @@ let restart_game () =
   g.restart <- true;
   g.dead <- false;
   highscore := g.score;
-  highScore ();
   set g
 
 let die () =
   let g = get () in
   g.dead <- true;
   highscore := g.score;
-  highScore ();
   set g
 
 let reset () =
@@ -74,7 +74,6 @@ let reset () =
   g.started <- false;
   g.dead <- false;
   g.score <- 0;
-  highScore ();
   set g
 
 let get_hero_position () =

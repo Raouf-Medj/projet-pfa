@@ -34,4 +34,14 @@ let draw ctx window =
   let instr_surface = Gfx.render_text ctx instructions font in
   Gfx.blit ctx (Gfx.get_surface window) instr_surface instr_x instr_y;
 
+  if Global.is_high_score (Global.get_score ()) then
+    let font = Gfx.load_font (if Gfx.backend = "js" then "monospace" else "resources/images/monospace.ttf") "" 25 in
+    let text = "New High Score!" in
+    let text_width, text_height = Gfx.measure_text text font in
+    let text_x = (Cst.window_width / 2) - (text_width / 2) in
+    let text_y = (Cst.window_height / 2) - (text_height / 2) + 10 in
+    Gfx.set_color ctx dark_purple;
+    let text_surface = Gfx.render_text ctx text font in
+    Gfx.blit ctx (Gfx.get_surface window) text_surface text_x text_y;
+    
   Gfx.commit ctx

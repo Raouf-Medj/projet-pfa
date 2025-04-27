@@ -36,4 +36,5 @@ val set_boss_health : int -> unit
 val get_boss_health : unit -> int
 val add_score : int -> unit
 val get_score : unit -> int
-val highScore : unit -> unit
+val is_high_score : int -> bool
+val set_high_score : int -> unit
