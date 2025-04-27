@@ -11,7 +11,7 @@ let up_projectile = Vector.{ x = 0.0; y = -15.0 }
 let down_projectile = Vector.{ x = 0.0; y = 15.0 }
 let right_projectile = Vector.{ x = 15.0; y = 0.0 }
 let left_projectile = Vector.{ x = -15.0; y = 0.0 }
-let hero_size = 32
+let hero_size = 30
 let hero_small_jump = 5.0
 let hero_big_jump = 6.5
 let barrel_size = 32
