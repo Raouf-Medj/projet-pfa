@@ -11,6 +11,7 @@ let projectile (x, y, width, height, txt, direction, attack) =
   e#box#set Rect.{width; height};
   let dir = [| Cst.up_projectile; Cst.down_projectile; Cst.right_projectile; Cst.left_projectile |] in
   e#velocity#set dir.(direction);
+  let global = Global.get () in
   e#resolve#set (fun n t ->
     match t#tag#get with
     | Barrier.Barrier _ | Barrel.Barrel _ ->
@@ -45,6 +46,7 @@ let projectile (x, y, width, height, txt, direction, attack) =
           let pos = s#position#get in
           let _ = Sun.sun (int_of_float pos.x , int_of_float pos.y - 32*2, 128, 128, 0) in ();
           Global.add_score 10;
+          global.boss <- None;
           );
         Draw_system.(unregister (e :> t));
         Collision_system.(unregister (e :> t));
@@ -70,7 +72,6 @@ let projectile (x, y, width, height, txt, direction, attack) =
 
     | _ -> ()
   );
-  let global = Global.get () in
   global.last_player_proj_dt <- Sys.time ();
   Global.set global;
   Draw_system.(register (e :> t));
