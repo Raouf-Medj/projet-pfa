@@ -1,5 +1,5 @@
 ![Orien logo](resources/images/logo.png)
-# Orien: An Eternal Quest
+# Orien: An Eternal Quest (v1.0.5)
 
 Welcome to **Orien: An Eternal Quest**, an OCaml project featuring SDL and JavaScript builds, and following the ECS architecture.
 
