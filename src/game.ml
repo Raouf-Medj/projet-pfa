@@ -10,31 +10,7 @@ let update dt =
     if (not (g.pause) && g.started && not g.dead) then (
       Move_system.update dt;
       Animation_system.update dt;
-      let g = Global.get () in
-      (match g.hero with
-      | Some h ->
-        Hero.update_hero_cooldown h;
-        List.iter (fun darkie -> Threat.update_darkie_position darkie) !Threat.darkies;
-        List.iter (fun follower -> Threat.update_follower_position follower) !Threat.followers;
-        let current_time = Sys.time () in
-        if current_time -. g.last_time_shot >= Cst.shooting_interval then (
-          g.last_time_shot <- current_time;
-          Global.set g;
-          List.iter (fun tower -> if (not (tower#is_on_boss())) then  FireballTower.shoot_fireballs tower h) !FireballTower.towers;
-        );
-        (match (Global.get ()).boss with 
-        | Some b -> 
-          let current_time = Sys.time () in
-          if current_time -. g.last_special_attack_time >= Cst.special_attack_interval then (
-            g.last_special_attack_time <- current_time;
-            Global.set g;
-            BossATK.perform_special_attack b h;
-          )else if current_time -. g.last_special_attack_time >= Cst.special_attack_interval/. 2. then  Boss.update_boss_position b;
-          List.iter (fun tower ->  if tower#is_on_boss() then FireballTower.move_tower tower b;) !FireballTower.towers;
-        | None -> ()
-        );
-      | None -> ());
-      let () = Hero.reset_hero_gravity () in
+      Atk.launch_attacks ();
       Collision_system.update dt;
       Gravitate_system.update dt; 
     );
