@@ -28,9 +28,10 @@ let move_health (e : healthBar) (b : threat) =
 
 let update_health_bar_width (e : healthBar) =
   let max_health = e#max_health#get in
-  let current_health = e#health#get in
+  let current_health = e#health#get - 1 in
   let original_width = (e#box#get).width in
   let new_width = (float_of_int current_health /. float_of_int max_health) *. (float_of_int original_width) in
   Draw_system.(unregister (e :> t));
-  e#box#set Rect.{ (e#box#get) with width = int_of_float new_width };
+  Gfx.debug "%f\n" new_width; 
+  e#box#set Rect.{ width = int_of_float new_width; height = (e#box#get).height };
   Draw_system.(register (e :> t))
