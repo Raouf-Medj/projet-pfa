@@ -6,7 +6,6 @@ type tag += Spike of threat | Darkie of threat | Follower of threat
 let darkies = ref []
 let followers = ref []
 
-(* Créer une hashtable pour stocker les ennemis par leur ID *)
 let enemies_table : (threat, healthBar) Hashtbl.t ref = ref (Hashtbl.create 16)
 
 let add_bar e h =

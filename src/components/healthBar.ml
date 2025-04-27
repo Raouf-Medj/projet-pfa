@@ -32,6 +32,5 @@ let update_health_bar_width (e : healthBar) =
   let original_width = (e#box#get).width in
   let new_width = (float_of_int current_health /. float_of_int max_health) *. (float_of_int original_width) in
   Draw_system.(unregister (e :> t));
-  Gfx.debug "%f\n" new_width; 
   e#box#set Rect.{ width = int_of_float new_width; height = (e#box#get).height };
   Draw_system.(register (e :> t))

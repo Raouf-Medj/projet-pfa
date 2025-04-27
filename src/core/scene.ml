@@ -7,6 +7,7 @@ let reset () =
     Threat.darkies := [];
     Threat.followers := [];
     FireballTower.towers := [];
+    Threat.enemies_table :=  Hashtbl.create 16
   in reset_level_entities ();
   Gravitate_system.reset ();
   Collision_system.reset ();
