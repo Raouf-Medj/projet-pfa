@@ -31,14 +31,6 @@ let get () : t =
 
 let set s = state := Some s
 
-let is_high_score s =
-    s > !highscore
-let set_high_score s =
-  let g = get () in
-  highscore := s;
-  g.score <- s;
-  set g
-
 let toggle_pause () =
   let g = get () in
   g.pause <- not g.pause;
@@ -121,7 +113,17 @@ let get_boss_health () =
 let get_score () =
   let g = get () in
   g.score
+
 let add_score s =
   let g = get () in
   g.score <- g.score + s;
+  set g
+
+let is_high_score s =
+  s > !highscore
+
+let set_high_score s =
+  let g = get () in
+  highscore := s;
+  g.score <- s;
   set g

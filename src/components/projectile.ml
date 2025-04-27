@@ -58,7 +58,7 @@ let projectile (x, y, width, height, txt, direction, attack) =
       else (
         Draw_system.(unregister (t :> t));
         Collision_system.(unregister (t :> t));
-        Move_system.(unregister (t :> t));
+        FireballTower.towers := List.filter (fun tower -> tower != t) !FireballTower.towers;
       );
       Draw_system.(unregister (e :> t));
       Collision_system.(unregister (e :> t));

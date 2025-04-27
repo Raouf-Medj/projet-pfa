@@ -1,7 +1,6 @@
 open System_defs
 open Component_defs
 open Ecs
-open Pause_screen
 
 let update dt =
     let () = Scene.update_scene () in
