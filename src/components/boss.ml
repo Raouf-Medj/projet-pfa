@@ -94,7 +94,7 @@ let spawn_enemies (b : boss) =
     (pos.x +. float spawn_offset, pos.y);
   ] in
   List.iter (fun (x, y) ->
-    let h = HealthBar.healthBar (int_of_float x, int_of_float y, Texture.red, 16, 8, 3) in
+    let h = HealthBar.healthBar (int_of_float x, int_of_float y, 16, 8, 3) in
     let _ = Threat.threat (int_of_float x, int_of_float y + 64 + 16, 32, 16, 2) ~platform_left:(b#get_platform_left) ~platform_right:(b#get_platform_right) ~h () in
     ()
   ) follower_positions

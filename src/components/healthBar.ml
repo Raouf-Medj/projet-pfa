@@ -3,18 +3,18 @@ open System_defs
 
 type tag += Bar of healthBar
 
-let healthBar (x, y, txt, width, height, max_health) =
-    let e = new healthBar () in
-    e#texture#set Texture.green;
-    e#position#set Vector.{x = float x; y = float y};
-    e#velocity#set Vector.{x = 1.0; y = 0.0};
-    e#tag#set (Bar e);
-    e#box#set Rect.{width; height};
-    e#max_health#set max_health;
-    e#health#set max_health;
-    Draw_system.(register (e :> t));
-    Move_system.(register (e :> t));
-    e
+let healthBar (x, y, width, height, max_health) =
+  let e = new healthBar () in
+  e#texture#set Texture.green;
+  e#position#set Vector.{x = float x; y = float y};
+  e#velocity#set Vector.{x = 1.0; y = 0.0};
+  e#tag#set (Bar e);
+  e#box#set Rect.{width; height};
+  e#max_health#set max_health;
+  e#health#set max_health;
+  Draw_system.(register (e :> t));
+  Move_system.(register (e :> t));
+  e
   
 let move_health (e : healthBar) (b : threat) =
   let b_pos = b#position#get in
