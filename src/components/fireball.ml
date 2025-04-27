@@ -32,6 +32,7 @@ let fireball (x, y, width, height, txt, direction, attack) =
       Draw_system.(unregister (e :> t));
       Collision_system.(unregister (e :> t));
       Move_system.(unregister (e :> t));
+      
     | _ -> ()
   );
   Draw_system.(register (e :> t));

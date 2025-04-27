@@ -67,7 +67,7 @@ let update_darkie_position (darkie :threat) =
 
   
 let update_follower_position (follower : threat) =
-  let hero_pos = Game_state.get_hero_position () in
+  let hero_pos = Global.get_hero_position () in
   let follower_pos = follower#position#get in
   let vel = follower#velocity#get in
   let platform_left = follower#get_platform_left in

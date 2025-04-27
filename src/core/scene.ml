@@ -4,10 +4,8 @@ type t = string array
 
 let reset () =
   let reset_level_entities () =
-    (* Réinitialiser les listes globales ou les systèmes contenant les entités spécifiques au niveau *)
     Threat.darkies := [];
     Threat.followers := [];
-    Boss.bosss := None;
     FireballTower.towers := [];
   in reset_level_entities ();
   Gravitate_system.reset ();
@@ -20,26 +18,16 @@ let find_platform_boundaries scene i j =
   let right = ref j in
   let row_length = String.length scene.(i) in
   let height = Array.length scene in
-
-  (* Vérifie si c'est un mur ou du sol *)
   let is_wall c = (c = 'B') in
-
-  (* Vérifie si l'ennemi peut marcher sur la case *)
   let is_safe_ground i j =
     i + 1 < height && scene.(i + 1).[j] = 'B'  (* Vérifie que sous la case actuelle il y a du sol *)
   in
-
-  (* Recherche vers la gauche *)
   while !left > 0 && not (is_wall scene.(i).[!left - 1]) && is_safe_ground i (!left - 1) do
     decr left
   done;
-
-  (* Recherche vers la droite *)
   while !right < row_length - 1 && not (is_wall scene.(i).[!right + 1]) && is_safe_ground i (!right + 1) do
     incr right
   done;
-
-  (* Retourne les coordonnées en pixels *)
   (float_of_int !left *. 32., float_of_int (!right + 1) *. 32.)
 
 let load scene_index save_hero_hl save_hero_mhl save_hero_prt save_hero_mprt save_hero_attack save_hero_nb_frags save_hero_has_key =
@@ -59,8 +47,8 @@ let load scene_index save_hero_hl save_hero_mhl save_hero_prt save_hero_mprt sav
         let _ = Barrier.barrier(j * 32 + 12, i * 32, Texture.blue, 8, 32) in
         ()
       else if c = 'T' then
-          let _ = FireballTower.tower (j * 32, i * 32, Texture.green, 32, 32, false) in
-          ()
+        let _ = FireballTower.tower (j * 32, i * 32, Texture.green, 32, 32, false) in
+        ()
       else if c = 'R' then
         let _ = Barrel.barrel (j * 32) (i * 32) in
         ()
@@ -85,7 +73,7 @@ let load scene_index save_hero_hl save_hero_mhl save_hero_prt save_hero_mprt sav
         h#attack#set save_hero_attack;
         h#collected_frags#set save_hero_nb_frags;
         h#has_key#set save_hero_has_key;
-        global.hero <- Some (h);
+        global.hero <- Some h;
         Global.set global
       else if c = 'P' then
         let _ = Threat.threat (j * 32, i * 32 + 16, 32, 16, 1) () in
@@ -121,9 +109,11 @@ let load scene_index save_hero_hl save_hero_mhl save_hero_prt save_hero_mprt sav
         ()
       else if c = 'X' then 
         let platform_left, platform_right = find_platform_boundaries scene i j in
-        let _ = FireballTower.tower (j * 32, i * 32, Texture.green, 0, 0, true) in 
-        let _ = Boss.boss ((j-2) * 32, (i-2) * 32 , 96, 96) ~platform_left ~platform_right () in 
-      ()
+        let t = FireballTower.tower (j * 32, i * 32, Texture.green, 0, 0, true) in 
+        let b = Boss.boss ((j-2) * 32, (i-2) * 32 , 96, 96) ~platform_left ~platform_right () in
+        global.boss <- Some b;
+        global.boss_tower <- Some t;
+        Global.set global
     done
   done
   

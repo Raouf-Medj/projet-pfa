@@ -37,9 +37,8 @@ let projectile (x, y, width, height, txt, direction, attack) =
           Draw_system.(unregister (s :> t));
           Collision_system.(unregister (s :> t));
           Move_system.(unregister (s :> t));
-          Game_state.set_boss_position s#position#get;
-          Boss.bosss := None;
-          Boss.killed := true;
+          let pos = s#position#get in
+          let _ = Sun.sun (int_of_float pos.x , int_of_float pos.y - 32*2, 128, 128, 0) in ()
         );
         Draw_system.(unregister (e :> t));
         Collision_system.(unregister (e :> t));

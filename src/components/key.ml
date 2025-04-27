@@ -5,7 +5,6 @@ type tag += Key of key
 
 let key x y =
   let e = new key () in
-  (* e#texture#set Texture.white; *)
   e#texture#set (let Global.{textures; _} = Global.get () in textures.(8));
   e#position#set Vector.{x = float x; y = float y};
   e#tag#set (Key e);

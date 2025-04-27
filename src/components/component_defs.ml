@@ -165,6 +165,7 @@ class type gravitational =
     inherit position
     inherit velocity
   end
+
 class type animatableHero =
   object
     inherit Entity.t

@@ -66,10 +66,12 @@ let hero x y =
           Collision_system.(unregister (e :> t));
           Move_system.(unregister (e :> t));
           Gravitate_system.(unregister (e :> t));
+          Animation_system.(unregister (e :> t)); 
           Global.die ()
         );
         e#damage_cooldown#set 60.;
       )
+
     |Boss.Boss s ->
       if e#damage_cooldown#get <= 0. then (
         if e#protection#get > 0 then e#protection#set (e#protection#get - 1)
@@ -79,10 +81,12 @@ let hero x y =
           Collision_system.(unregister (e :> t));
           Move_system.(unregister (e :> t));
           Gravitate_system.(unregister (e :> t));
+          Animation_system.(unregister (e :> t)); 
           Global.die ()
         );
         e#damage_cooldown#set 60.;
       )
+
     | Potion.Potion s ->
       if e#health#get < e#max_health#get then e#health#set (e#health#get + 1);
       s#position#set Vector.{ x = -1000.; y = -1000. };
@@ -180,7 +184,7 @@ let move_hero hero v spc =
       )
     ) else
       hero#velocity#set (Vector.add hero#velocity#get Vector.{ x = v.x; y = 0. });
-    Game_state.set_hero_position hero#position#get
+      Global.set_hero_position hero#position#get
     )
 
 let update_hero_cooldown (hero : hero) =

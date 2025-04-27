@@ -14,6 +14,8 @@ type t = {
   mutable won : bool;
   mutable started : bool;
   mutable dead : bool;
+  mutable boss : boss option;
+  mutable boss_tower : tower option;
 }
 
 val get : unit -> t
@@ -23,3 +25,9 @@ val start_game : unit -> unit
 val restart_game : unit -> unit
 val reset : unit -> unit
 val die : unit -> unit
+val set_boss_position : Vector.t -> unit
+val get_boss_position : unit -> Vector.t
+val set_hero_position : Vector.t -> unit
+val get_hero_position : unit -> Vector.t
+val set_boss_health : int -> unit
+val get_boss_health : unit -> int

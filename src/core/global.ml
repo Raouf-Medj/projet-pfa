@@ -14,6 +14,8 @@ type t = {
   mutable won : bool;
   mutable started : bool;
   mutable dead : bool;
+  mutable boss : boss option;
+  mutable boss_tower : tower option;
 }
 
 let state = ref None
@@ -58,3 +60,45 @@ let reset () =
   g.started <- false;
   g.dead <- false;
   set g
+
+let get_hero_position () =
+  let g = get () in match g.hero with
+  | None -> Vector.zero
+  | Some h -> h#position#get
+
+let set_hero_position pos =
+  let g = get () in match g.hero with
+  | None -> ()
+  | Some h -> (
+      h#position#set pos;
+      g.hero <- Some h;
+      set g
+    )
+
+let set_boss_position pos =
+  let g = get () in match g.boss with
+  | None -> ()
+  | Some h -> (
+      h#position#set pos;
+      g.boss <- Some h;
+      set g
+    )
+
+let get_boss_position () =
+  let g = get () in match g.boss with
+  | None -> Vector.zero
+  | Some b -> b#position#get
+
+let set_boss_health h =
+  let g = get () in match g.boss with
+  | None -> ()
+  | Some b -> (
+      b#health#set h;
+      g.boss <- Some b;
+      set g
+    )
+
+let get_boss_health () =
+  let g = get () in match g.boss with
+  | None -> 0
+  | Some b -> b#health#get
