@@ -58,7 +58,8 @@ let run () =
                   let last_player_proj_dt = 0. in
                   let last_time_shot = 0. in
                   let last_special_attack_time = 0. in
-                  let global = Global.{ window; ctx; hero = None; textures; scenes; current_scene; load_next_scene; restart; last_player_proj_dt; pause=false; won=false; started=false; dead=false; boss=None; boss_tower=None; last_special_attack_time; last_time_shot } in
+                  let score = 0 in
+                  let global = Global.{ window; ctx; hero = None; textures; scenes; current_scene; load_next_scene; restart; last_player_proj_dt; pause=false; won=false; started=false; dead=false; boss=None; boss_tower=None; last_special_attack_time; last_time_shot; score } in
                   Global.set global;
                   Gfx.main_loop update (fun () -> ())
               )

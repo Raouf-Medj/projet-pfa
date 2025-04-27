@@ -18,8 +18,7 @@ let draw ctx window =
   Gfx.blit ctx (Gfx.get_surface window) text_surface text_x text_y;
 
   let font = Gfx.load_font (if Gfx.backend = "js" then "monospace" else "resources/images/monospace.ttf") "" 15 in
-  let text = "Thanks for playing!" in
-  let text_width, text_height = Gfx.measure_text text font in
+  let text = "Thanks for playing! Your score is " ^ string_of_int (Global.get_score ()) in  let text_width, text_height = Gfx.measure_text text font in
   let text_x = (Cst.window_width / 2) - (text_width / 2) in
   let text_y = (Cst.window_height / 2) - (text_height / 2) - 20 in
   Gfx.set_color ctx dark_blue;

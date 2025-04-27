@@ -131,6 +131,7 @@ let update_scene () =
           if global.restart then (
             global.restart <- false;
             global.current_scene <- 0;
+            global.score <- 0;
             Global.set global;
             load global.current_scene 1 1 1 1 1 0 false
           )

@@ -20,11 +20,14 @@ let projectile (x, y, width, height, txt, direction, attack) =
       Gravitate_system.(unregister (e :> t));
 
     | Threat.Darkie s | Threat.Follower s ->
-      if s#health#get > attack then s#health#set (s#health#get - attack)
+      if s#health#get > attack then 
+        (s#health#set (s#health#get - attack);
+        Global.add_score (1))
       else (
         Draw_system.(unregister (s :> t));
         Collision_system.(unregister (s :> t));
         Move_system.(unregister (s :> t));
+        Global.add_score 1;
       );
       Draw_system.(unregister (e :> t));
       Collision_system.(unregister (e :> t));
@@ -32,14 +35,17 @@ let projectile (x, y, width, height, txt, direction, attack) =
       Gravitate_system.(unregister (e :> t));
       
     | Boss.Boss s ->
-        if s#health#get > attack then s#health#set (s#health#get - attack)
+        if s#health#get > attack then 
+          (s#health#set (s#health#get - attack);
+          Global.add_score 1;)
         else (
           Draw_system.(unregister (s :> t));
           Collision_system.(unregister (s :> t));
           Move_system.(unregister (s :> t));
           let pos = s#position#get in
-          let _ = Sun.sun (int_of_float pos.x , int_of_float pos.y - 32*2, 128, 128, 0) in ()
-        );
+          let _ = Sun.sun (int_of_float pos.x , int_of_float pos.y - 32*2, 128, 128, 0) in ();
+          Global.add_score 10;
+          );
         Draw_system.(unregister (e :> t));
         Collision_system.(unregister (e :> t));
         Move_system.(unregister (e :> t));

@@ -18,6 +18,7 @@ type t = {
   mutable boss_tower : tower option;
   mutable last_special_attack_time : float;
   mutable last_time_shot : float;
+  mutable score : int;
 }
 
 val get : unit -> t
@@ -33,3 +34,6 @@ val set_hero_position : Vector.t -> unit
 val get_hero_position : unit -> Vector.t
 val set_boss_health : int -> unit
 val get_boss_health : unit -> int
+val add_score : int -> unit
+val get_score : unit -> int
+val highScore : unit -> unit

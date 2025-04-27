@@ -18,9 +18,11 @@ type t = {
   mutable boss_tower : tower option;
   mutable last_special_attack_time : float;
   mutable last_time_shot : float;
+  mutable score : int;
 }
 
 let state = ref None
+let highscore = ref 0
 
 let get () : t =
   match !state with
@@ -28,6 +30,12 @@ let get () : t =
   | Some s -> s
 
 let set s = state := Some s
+
+let highScore () =
+  let g = get () in
+    if   g.dead || g.won || g.restart then
+      Highscore.add_high_score !highscore
+  
 
 let toggle_pause () =
   let g = get () in
@@ -43,11 +51,15 @@ let restart_game () =
   let g = get () in
   g.restart <- true;
   g.dead <- false;
+  highscore := g.score;
+  highScore ();
   set g
 
 let die () =
   let g = get () in
   g.dead <- true;
+  highscore := g.score;
+  highScore ();
   set g
 
 let reset () =
@@ -61,6 +73,8 @@ let reset () =
   g.won <- false;
   g.started <- false;
   g.dead <- false;
+  g.score <- 0;
+  highScore ();
   set g
 
 let get_hero_position () =
@@ -104,3 +118,11 @@ let get_boss_health () =
   let g = get () in match g.boss with
   | None -> 0
   | Some b -> b#health#get
+
+let get_score () =
+  let g = get () in
+  g.score
+let add_score s =
+  let g = get () in
+  g.score <- g.score + s;
+  set g
