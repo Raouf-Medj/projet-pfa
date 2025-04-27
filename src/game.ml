@@ -3,36 +3,33 @@ open Component_defs
 open Ecs
 open Pause_screen
 
-let last_special_attack_time = ref 0.0  (* Temps de la dernière attaque spéciale *)
-let special_attack_interval = 1.  (* Intervalle en secondes entre les attaques spéciales *)
-let last_shot_time = ref 0.0  (* Temps de la dernière attaque spéciale *)
-let shooting_interval = 1.5  (* Intervalle en secondes entre les attaques spéciales *)
-
 let update dt =
     let () = Scene.update_scene () in
     let () = Input.handle_input () in
-    if (not ((Global.get ()).pause) && (Global.get ()).started && not (Global.get ()).dead) then (
+    let g = Global.get () in
+    if (not (g.pause) && g.started && not g.dead) then (
       Move_system.update dt;
       Animation_system.update dt;
-      (*FireballTower.update_fireball_towers ();*)
-      let Global.{hero; _ } = Global.get () in
-      (match hero with
+      let g = Global.get () in
+      (match g.hero with
       | Some h ->
         Hero.update_hero_cooldown h;
         List.iter (fun darkie -> Threat.update_darkie_position darkie) !Threat.darkies;
         List.iter (fun follower -> Threat.update_follower_position follower) !Threat.followers;
         let current_time = Sys.time () in
-        if current_time -. !last_shot_time >= shooting_interval then (
-          last_shot_time := current_time;
+        if current_time -. g.last_time_shot >= Cst.shooting_interval then (
+          g.last_time_shot <- current_time;
+          Global.set g;
           List.iter (fun tower -> if (not (tower#is_on_boss())) then  FireballTower.shoot_fireballs tower h) !FireballTower.towers;
         );
         (match (Global.get ()).boss with 
         | Some b -> 
           let current_time = Sys.time () in
-          if current_time -. !last_special_attack_time >= special_attack_interval then (
-            last_special_attack_time := current_time;
+          if current_time -. g.last_special_attack_time >= Cst.special_attack_interval then (
+            g.last_special_attack_time <- current_time;
+            Global.set g;
             BossATK.perform_special_attack b h;
-          )else if current_time -. !last_special_attack_time >= special_attack_interval/. 2. then  Boss.update_boss_position b;
+          )else if current_time -. g.last_special_attack_time >= Cst.special_attack_interval/. 2. then  Boss.update_boss_position b;
           List.iter (fun tower ->  if tower#is_on_boss() then FireballTower.move_tower tower b;) !FireballTower.towers;
         | None -> ()
         );
@@ -83,7 +80,9 @@ let run () =
                   let load_next_scene = true in
                   let restart = false in
                   let last_player_proj_dt = 0. in
-                  let global = Global.{ window; ctx; hero = None; textures; scenes; current_scene; load_next_scene; restart; last_player_proj_dt; pause=false; won=false; started=false; dead=false; boss=None; boss_tower=None } in
+                  let last_time_shot = 0. in
+                  let last_special_attack_time = 0. in
+                  let global = Global.{ window; ctx; hero = None; textures; scenes; current_scene; load_next_scene; restart; last_player_proj_dt; pause=false; won=false; started=false; dead=false; boss=None; boss_tower=None; last_special_attack_time; last_time_shot } in
                   Global.set global;
                   Gfx.main_loop update (fun () -> ())
               )

@@ -21,3 +21,5 @@ let projectile_size = 10
 let player_proj_cd = 0.5
 let gravity = 0.3
 let hero_max_velocity = 10.
+let special_attack_interval = 1.  (* Intervalle en secondes entre les attaques spéciales *)
+let shooting_interval = 1.5  (* Intervalle en secondes entre les attaques spéciales *)

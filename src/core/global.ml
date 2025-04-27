@@ -16,6 +16,8 @@ type t = {
   mutable dead : bool;
   mutable boss : boss option;
   mutable boss_tower : tower option;
+  mutable last_special_attack_time : float;
+  mutable last_time_shot : float;
 }
 
 let state = ref None
