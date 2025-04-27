@@ -6,8 +6,17 @@ type tag += Spike of threat | Darkie of threat | Follower of threat
 let darkies = ref []
 let followers = ref []
 
+(* Créer une hashtable pour stocker les ennemis par leur ID *)
+let enemies_table : (threat, healthBar) Hashtbl.t ref = ref (Hashtbl.create 16)
 
-let threat (x, y, width, height, typ) ?(platform_left = 0.0) ?(platform_right = 0.0) () =
+let add_bar e h =
+  Hashtbl.add !enemies_table e h
+let get_bar e =
+  try Some (Hashtbl.find !enemies_table e)
+  with Not_found -> None
+let remove_bar e =
+  Hashtbl.remove !enemies_table e
+let threat (x, y, width, height, typ) ?(platform_left = 0.0) ?(platform_right = 0.0) ?(h) () =
   let e = new threat () in
   if typ = 0 then ( (* Darkie: moving enemy *)
     e#position#set Vector.{x = float x; y = float y};
@@ -16,6 +25,12 @@ let threat (x, y, width, height, typ) ?(platform_left = 0.0) ?(platform_right = 
     e#velocity#set Vector.{x = 1.0; y = 0.0};
     e#set_platform_boundaries platform_left platform_right;
     e#health#set 2;
+
+    match h with 
+    |None -> ()
+    |Some bar -> add_bar e bar;
+
+
     e#tag#set (Darkie e);
     Draw_system.(register (e :> t));
     Move_system.(register (e :> t));
@@ -45,7 +60,11 @@ let threat (x, y, width, height, typ) ?(platform_left = 0.0) ?(platform_right = 
     e#velocity#set Vector.{x = 1.0; y = 0.0};
     e#set_platform_boundaries platform_left platform_right;
     e#health#set 3;
-    e#set_health_bar h;
+
+    match h with 
+    |None -> ()
+    |Some bar ->     add_bar e bar;
+
     e#tag#set (Follower e);
     Draw_system.(register (e :> t));
     Move_system.(register (e :> t));
@@ -64,7 +83,12 @@ let update_darkie_position (darkie :threat) =
   let platform_left = darkie#get_platform_left in
   let platform_right = darkie#get_platform_right in
   if new_pos.x <= platform_left || new_pos.x +. float box.width >= platform_right then
-    darkie#velocity#set Vector.{x = -.vel.x; y = vel.y}
+    darkie#velocity#set Vector.{x = -.vel.x; y = vel.y};
+    let bar = get_bar darkie in 
+    match bar with 
+    |None -> ()
+    |Some h -> HealthBar.move_health h darkie
+  
 
   
 let update_follower_position (follower : threat) =
@@ -84,6 +108,10 @@ let update_follower_position (follower : threat) =
       let speed = 1.5 in
       let velocity = Vector.mult speed normalized_direction in
       follower#velocity#set Vector.{ x = velocity.x; y = 0.0 };
+      let bar = get_bar follower in 
+      match bar with 
+      |None -> ()
+      |Some h -> HealthBar.move_health h follower;
       let new_pos = Vector.add follower_pos follower#velocity#get in
       follower#position#set Vector.{ x = new_pos.x; y = follower_pos.y }
     )
@@ -91,10 +119,18 @@ let update_follower_position (follower : threat) =
     (* Le héros n'est pas sur la même plateforme, le follower agit comme un darkie *)
     let new_pos = Vector.add follower_pos vel in
     follower#position#set new_pos;
+    let bar = get_bar follower in 
+      match bar with 
+      |None -> ()
+      |Some h -> HealthBar.move_health h follower;
 
     (* Inverser la direction si le follower atteint les bords de la plateforme *)
     let box = follower#box#get in
     if new_pos.x <= platform_left || new_pos.x +. float box.width >= platform_right then (
-      follower#velocity#set Vector.{ x = -.vel.x; y = vel.y }
+      follower#velocity#set Vector.{ x = -.vel.x; y = vel.y };
+      let bar = get_bar follower in 
+      match bar with 
+      |None -> ()
+      |Some h -> HealthBar.move_health h follower
     )
   )

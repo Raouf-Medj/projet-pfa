@@ -23,12 +23,19 @@ let projectile (x, y, width, height, txt, direction, attack) =
     | Threat.Darkie s | Threat.Follower s ->
       if s#health#get > attack then 
         (s#health#set (s#health#get - attack);
-        Global.add_score (1))
+        Global.add_score (1);
+        match Threat.get_bar s with
+        |None -> ()
+        |Some h -> HealthBar.update_health_bar_width h)
       else (
         Draw_system.(unregister (s :> t));
         Collision_system.(unregister (s :> t));
         Move_system.(unregister (s :> t));
         Global.add_score 1;
+        match Threat.get_bar s with
+        |None -> ()
+        |Some h -> Draw_system.(unregister (h :> t));
+                  Move_system.(unregister (h :> t));
       );
       Draw_system.(unregister (e :> t));
       Collision_system.(unregister (e :> t));

@@ -280,6 +280,19 @@ class key () =
     inherit texture ()
   end
 
+class healthBar () =
+  object
+    inherit Entity.t ()
+    inherit position ()
+    inherit box ()
+    inherit tagged ()
+    inherit texture ()
+    inherit resolver ()
+    inherit velocity ()
+    inherit health ()
+    inherit max_health ()
+  end
+
 class threat () =
   object
     inherit Entity.t ()
